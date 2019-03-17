@@ -1,0 +1,113 @@
+commit 3d5b6276901ebcd54dfb4fd5afda27d77bac2986
+Author: Mikko Pelkonen <m.a.pelkonen2@gmail.com>
+Date:   Sun Mar 17 11:41:09 2019 +0200
+
+    poistettu file1, file2 nimetty file22
+
+ tiedostoja/file2             | 0
+ tiedostoja/{file1 => file22} | 0
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+
+commit a647af88b36d798aeb6790189eb50a6c2486ebc7
+Author: Mikko Pelkonen <m.a.pelkonen2@gmail.com>
+Date:   Sun Mar 17 11:34:45 2019 +0200
+
+    luotu file1, file2, file3
+
+ tiedostoja/file1 | 0
+ tiedostoja/file2 | 0
+ tiedostoja/file3 | 0
+ 3 files changed, 0 insertions(+), 0 deletions(-)
+
+commit 45a92a6409c67c3a1316be110024130fa3207d90
+Author: Mikko Pelkonen <m.a.pelkonen2@gmail.com>
+Date:   Sun Mar 17 11:24:44 2019 +0200
+
+    muutoksia eka.txt ja kolmas.txt
+
+ eka.txt    | 188 +++----------------------------------------------------------
+ kolmas.txt |   5 +-
+ 2 files changed, 12 insertions(+), 181 deletions(-)
+
+commit f27b275d2610e1f66d65114123f07f5ad6479cfb
+Author: Mikko Pelkonen <m.a.pelkonen2@gmail.com>
+Date:   Sun Mar 17 11:21:19 2019 +0200
+
+    tiedosto.txt nimetty eka.txt
+
+ tiedosto.txt => eka.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 7da206f4eca2d11a5b3fafe73d96df6d6ce46976
+Author: Mikko Pelkonen <m.a.pelkonen2@gmail.com>
+Date:   Sun Mar 17 11:19:49 2019 +0200
+
+    poistettu toinen.txt
+
+ toinen.txt | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 2b6dfb462f71f7f50353cf536294960901fdf844
+Author: Mikko Pelkonen <m.a.pelkonen2@gmail.com>
+Date:   Sun Mar 17 11:17:34 2019 +0200
+
+    poistettu ja lisätty tekstiä
+
+ tiedosto.txt | 208 ++++++-----------------------------------------------------
+ 1 file changed, 19 insertions(+), 189 deletions(-)
+
+commit f45118f984330403bcc654a63c30d47b9c595cbb
+Author: Mikko Pelkonen <m.a.pelkonen2@gmail.com>
+Date:   Sun Mar 17 11:14:18 2019 +0200
+
+    tiedosto.txt lisätty paljon tekstiä
+
+ tiedosto.txt | 628 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 628 insertions(+)
+
+commit ef16f80b717fe93d7cd675c019823facef64d1d5
+Author: Mikko Pelkonen <m.a.pelkonen2@gmail.com>
+Date:   Sun Mar 17 11:10:59 2019 +0200
+
+    luotu stuff
+
+ stuff/stuff.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 56beacd2859ab1c90bff2e42bfb4d84892692b1b
+Author: Mikko Pelkonen <m.a.pelkonen2@gmail.com>
+Date:   Sun Mar 17 11:10:00 2019 +0200
+
+    toinen.txt ja kolmas.txt muutettu
+
+ kolmas.txt | 1 +
+ toinen.txt | 1 +
+ 2 files changed, 2 insertions(+)
+
+commit b78f4cab9b916af26992a87e2f25d5675acbb29d
+Author: Mikko Pelkonen <m.a.pelkonen2@gmail.com>
+Date:   Sun Mar 17 11:08:23 2019 +0200
+
+    luotu kolmas
+
+ kolmas.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 2cae992448f41b135dc9bac88c41120e81355a56
+Author: Malpel <m.a.pelkonen2@gmail.com>
+Date:   Sun Mar 17 11:03:09 2019 +0200
+
+    muutos ja lisäys
+
+ tiedosto.txt | 1 +
+ toinen.txt   | 0
+ 2 files changed, 1 insertion(+)
+
+commit 993aa5f7740e870f0df542eda73d058eb2c183a2
+Author: Malpel <m.a.pelkonen2@gmail.com>
+Date:   Sun Mar 17 11:01:50 2019 +0200
+
+    tiedosto.txt luotu
+
+ tiedosto.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
