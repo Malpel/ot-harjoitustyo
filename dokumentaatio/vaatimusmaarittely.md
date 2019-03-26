@@ -12,9 +12,4 @@ Sovellus on totetutus klassikkopeli Tetriksestä.
 - pelin voi pysäyttää
 - _high scoren_ tallennus nimimerkkiä käyttäen
 - _high score_ -näkymä
-
-
-## Jatkokehitysideoita
-
-- tallentaminen
-- taustamusiikki
+- käyttäjä näkee kuluneen ajan
