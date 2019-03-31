@@ -23,9 +23,9 @@ public class Tetris {
             {0, 0, 0, 0}};
 
         int[][] T = {
-            {0, 0, 0},
             {0, 1, 0},
-            {1, 1, 1}};
+            {1, 1, 1},
+            {0, 0, 0}};
 
         int[][] L = {
             {0, 1, 0},
@@ -79,25 +79,24 @@ public class Tetris {
         this.tetrominos = tetrominos;
     }
 
-    public void newBrick(Tetromino t) {
-        
-        //TODO kaikkia tetrominoja ei voi piirtää tällä
+    public void newTetromino(Tetromino t) {
 
         int rowSize = t.tetromino.length;
-        int middle = 4;
 
         for (int y = 0; y < rowSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 if (t.tetromino[y][x] == 1) {
-                    matrix[y][middle] = 1;
-                    middle++;
+                    matrix[y][x + 3] = 1;
 
                 }
 
             }
-            middle = 4;
 
         }
+
+    }
+
+    public void updateMatrix() {
         
         
 

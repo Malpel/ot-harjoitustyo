@@ -13,13 +13,18 @@ import javafx.stage.Stage;
 
 public class TetrisUi extends Application {
 
+    //tetris service
+    final int matrixWidth = 10;
+    final int matrixHeight = 22;
+    int width = 350; //35 * matrixWidth
+    int height = 770; //35 * matrixHeight
+    int scale = height / matrixHeight;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        int width = 350; //35
-        int height = 770; //35
-
-        Tetris testo = new Tetris(10, 22);
+        //tetris service
+        Tetris testo = new Tetris(matrixWidth, matrixHeight);
 
         Canvas canvas = new Canvas(width, height);
 
@@ -29,14 +34,14 @@ public class TetrisUi extends Application {
 
         gc.setFill(Color.BLACK);
 
-        Tetromino t = testo.getTetrominos()[5];
-        testo.newBrick(t);
+        Tetromino t = testo.getTetrominos()[1];
+        testo.newTetromino(t);
         int[][] m = testo.getMatrix();
 
-        for (int y = 0; y < 22; y++) {
-            for (int x = 0; x < 10; x++) {
+        for (int y = 0; y < matrixHeight; y++) {
+            for (int x = 0; x < matrixWidth; x++) {
                 if (m[y][x] == 1) {
-                   gc.fillRect((x*35), (y*35), 35, 35);
+                    gc.fillRect((x * scale), (y * scale), scale, scale);
                 }
                 System.out.print(m[y][x] + " ");
 
