@@ -1,8 +1,10 @@
 package ui;
 
 import domain.Tetris;
+import domain.TetrisService;
 import domain.Tetromino;
 import java.util.List;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -13,18 +15,17 @@ import javafx.stage.Stage;
 
 public class TetrisUi extends Application {
 
-    //tetris service
-    final int matrixWidth = 10;
-    final int matrixHeight = 22;
-    int width = 350; //35 * matrixWidth
-    int height = 770; //35 * matrixHeight
-    int scale = height / matrixHeight;
+    int width;
+    int height;
+    int scale;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        //tetris service
-        Tetris testo = new Tetris(matrixWidth, matrixHeight);
+        TetrisService tetris = new TetrisService();
+        width = tetris.getCanvasWidth();
+        height = tetris.getCanvasHeight();
+        scale = tetris.getScale();
 
         Canvas canvas = new Canvas(width, height);
 
@@ -34,21 +35,36 @@ public class TetrisUi extends Application {
 
         gc.setFill(Color.BLACK);
 
-        Tetromino t = testo.getTetrominos()[1];
-        testo.newTetromino(t);
-        int[][] m = testo.getMatrix();
+        tetris.newTetromino();
 
-        for (int y = 0; y < matrixHeight; y++) {
-            for (int x = 0; x < matrixWidth; x++) {
-                if (m[y][x] == 1) {
-                    gc.fillRect((x * scale), (y * scale), scale, scale);
+        new AnimationTimer() {
+            long previous = 0;
+
+            @Override
+            public void handle(long now) {
+                if (previous != 0) {
+                    if (now > previous + 1_000_000_000) {
+                        for (int y = 0; y < tetris.getMatrixHeight(); y++) {
+                            for (int x = 0; x < tetris.getMatrixWidth(); x++) {
+                                if (tetris.getMatrix()[y][x] == 1) {
+                                    gc.fillRect((x * scale), (y * scale), scale, scale);
+                                }
+                                if (tetris.getFaller().getOrigin().getY() == y && tetris.getFaller().getOrigin().getX() == x) {
+                                    gc.fillRect((x * scale), (y * scale), scale, scale);
+                                }
+                            }
+
+                        }
+
+                    }
+                } else {
+                    previous = now;
                 }
-                System.out.print(m[y][x] + " ");
+
+                tetris.updateTetris();
 
             }
-            System.out.println("");
-        }
-
+        }.start();
         Scene s = new Scene(bp);
 
         primaryStage.setScene(s);
@@ -57,6 +73,7 @@ public class TetrisUi extends Application {
     }
 
     @Override
+
     public void stop() {
         System.out.println("Sulkeutuu");
     }
