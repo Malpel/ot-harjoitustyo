@@ -3,7 +3,9 @@ package ui;
 import domain.Tetris;
 import domain.TetrisService;
 import domain.Tetromino;
+import java.awt.Point;
 import java.util.List;
+import java.util.TimerTask;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -18,11 +20,13 @@ public class TetrisUi extends Application {
     int width;
     int height;
     int scale;
+    int time;
+    TetrisService tetris;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        TetrisService tetris = new TetrisService();
+        tetris = new TetrisService();
         width = tetris.getCanvasWidth();
         height = tetris.getCanvasHeight();
         scale = tetris.getScale();
@@ -37,49 +41,57 @@ public class TetrisUi extends Application {
 
         tetris.newTetromino();
 
-        new AnimationTimer() {
-            long previous = 0;
-
+        new Thread() {
             @Override
-            public void handle(long now) {
-                if (previous != 0) {
-                    if (now > previous + 1_000_000_000) {
-                        for (int y = 0; y < tetris.getMatrixHeight(); y++) {
-                            for (int x = 0; x < tetris.getMatrixWidth(); x++) {
-                                if (tetris.getMatrix()[y][x] == 1) {
-                                    gc.fillRect((x * scale), (y * scale), scale, scale);
-                                }
-                                if (tetris.getFaller().getOrigin().getY() == y && tetris.getFaller().getOrigin().getX() == x) {
-                                    gc.fillRect((x * scale), (y * scale), scale, scale);
-                                }
-                            }
-
-                        }
-
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(1000);
+                        tetris.updateTetris();
+                        draw(gc);
+                    } catch (InterruptedException e) {
                     }
-                } else {
-                    previous = now;
                 }
-
-                tetris.updateTetris();
-
             }
         }.start();
+
         Scene s = new Scene(bp);
 
         primaryStage.setScene(s);
-        primaryStage.setTitle("Tetris");
+
+        primaryStage.setTitle(
+                "Tetris");
         primaryStage.show();
     }
 
-    @Override
+    public void draw(GraphicsContext gc) {
 
+        for (Point p : tetris.getFaller().getTetromino()) {
+            gc.fillRect(((p.x + tetris.getFaller().getOrigin().x) * scale), ((p.y + tetris.getFaller().getOrigin().y) * scale), scale, scale);
+            
+        }
+    }
+
+    @Override
     public void stop() {
         System.out.println("Sulkeutuu");
     }
 
     public static void main(String[] args) {
-        launch(TetrisUi.class);
+        launch(TetrisUi.class
+        );
     }
 
+//    public class GameLoop extends TimerTask{
+//
+//        @Override
+//        public void run() {
+//            if (tetris.getFaller() == null) {
+//                
+//            } else {
+//                tetris.updateTetris();
+//            }
+//        }
+//    
+//}
 }

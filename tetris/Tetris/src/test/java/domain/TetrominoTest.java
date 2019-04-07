@@ -28,12 +28,12 @@ public class TetrominoTest {
     @Before
     public void setUp() {
         
-        int[][] L = {
-            {1, 0},
-            {1, 0},
-            {1, 1}};
-        
-        tetromino = new Tetromino(L);
+//        int[][] L = {
+//            {1, 0},
+//            {1, 0},
+//            {1, 1}};
+//        
+//        tetromino = new Tetromino(L);
 
 
     }
@@ -42,12 +42,12 @@ public class TetrominoTest {
     public void tearDown() {
     }
     
-    @Test
-    public void tetrominoFallsDown() {;
-        tetromino.dropDown();
-        assertEquals(new Point(4, 1), tetromino.getOrigin());
-       
-    }
+//    @Test
+//    public void tetrominoFallsDown() {;
+//        tetromino.dropDown();
+//        assertEquals(new Point(4, 1), tetromino.getOrigin());
+//       
+//    }
 
 
 }

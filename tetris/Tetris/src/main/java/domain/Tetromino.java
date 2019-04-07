@@ -6,30 +6,32 @@ import java.util.List;
 
 public class Tetromino {
 
-    int[][] tetromino;
+    Point[][] rotations;
+    Point[] tetromino;
     Point origin;
-    boolean falling;
+    //color
+    //rotation?
 
-    public Tetromino(int[][] t) {
+    public Tetromino(Point[][] t) {
         origin = new Point(4, 0);
-        tetromino = t;
-        falling = true;
+        rotations = t;
+        tetromino = new Point[4];
     }
 
-    public int[][] getTetromino() {
+    public Point[][] getRotations() {
+        return rotations;
+    }
+
+    public void setRotations(Point[][] tetromino) {
+        this.rotations = tetromino;
+    }
+
+    public Point[] getTetromino() {
         return tetromino;
     }
 
-    public void setTetromino(int[][] tetromino) {
+    public void setTetromino(Point[] tetromino) {
         this.tetromino = tetromino;
-    }
-
-    public boolean isFalling() {
-        return falling;
-    }
-
-    public void setFalling(boolean falling) {
-        this.falling = falling;
     }
 
     public Point getOrigin() {
@@ -37,15 +39,15 @@ public class Tetromino {
     }
 
     public void rotate() {
-
+        
     }
 
-    public void moveSideways() {
-
+    public void move(int i) {
+        this.origin.x += i;
     }
 
     public void dropDown() {
-        this.origin = new Point(origin.x, origin.y + 1);
+        this.origin.y += 1;
     }
 
 }

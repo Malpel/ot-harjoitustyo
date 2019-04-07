@@ -9,7 +9,6 @@ public class Tetris {
     int[][] matrix;
     int width;
     int height;
-    Tetromino faller;
 
     public Tetris(int width, int height) {
         matrix = new int[height][width];
@@ -26,62 +25,26 @@ public class Tetris {
         this.matrix = matrix;
     }
 
-    public Tetromino getFaller() {
-        return faller;
-    }
-
-    public void setFaller(Tetromino faller) {
-        this.faller = faller;
-    }
-
-    public void updateMatrix() {
-        int rowSize = faller.getTetromino().length;
-        int colSize = faller.getTetromino()[0].length;
-        int[][] tetra = faller.getTetromino();
-        boolean allOk = false;
-        //rework this
-        for (int y = 0; y < rowSize; y++) {
-            for (int x = 0; x < colSize; x++) {
-                if (tetra[y][x] != 0) {
-                    if (!blocked(y + (faller.getOrigin().y + 1), (x + faller.getOrigin().x))) {
-
-                        allOk = true;
-                    } else {
-                        allOk = false;
-
-                    }
-
-                }
-
-            }
-
+    public void updateMatrix(Tetromino faller) {
+        for (Point p : faller.tetromino) {
+            matrix[faller.getOrigin().y + p.y][faller.getOrigin().x + p.x] = 1; // tetromino.color
         }
-        
-        if (allOk) {
-            faller.dropDown();
-        } else {
-            for (int y = 0; y < rowSize; y++) {
-                for (int x = 0; x < colSize; x++) {
-                    matrix[y + faller.getOrigin().y][x + faller.getOrigin().x] = 1;
-
-                }
-
-            }
-
-        }
-
+        faller = null;
     }
 
-    //rework this
-    public boolean blocked(int newRow, int newCol) {
+    public boolean blocked(Tetromino faller, int newRow, int newCol) {
 
-        if (newRow >= matrix.length) {
-            return true;
-        } else if (matrix[newRow][newCol] != 0) {
-            return true;
+        for (Point p : faller.tetromino) {
+            if (matrix[p.y + newRow][p.x + newCol] != 0) {
+                return true;
+            }
         }
 
         return false;
+    }
+
+    public void removeRows() {
+
     }
 
 }
