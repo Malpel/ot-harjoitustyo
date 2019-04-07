@@ -38,8 +38,13 @@ public class Tetromino {
         return this.origin;
     }
 
+    public void setOrigin(int x, int y) {
+        origin.x = x;
+        origin.y = y;
+    }
+
     public void rotate() {
-        
+
     }
 
     public void move(int i) {

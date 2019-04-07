@@ -35,14 +35,19 @@ public class Tetris {
     public boolean blocked(Tetromino faller, int newRow, int newCol) {
 
         for (Point p : faller.tetromino) {
+            if (p.y + newRow >= height || p.x + newCol >= width || p.x + newCol < 0) {
+                return true;
+            }
             if (matrix[p.y + newRow][p.x + newCol] != 0) {
                 return true;
             }
+
         }
 
         return false;
     }
 
+    //implement this
     public void removeRows() {
 
     }

@@ -5,12 +5,16 @@ import domain.TetrisService;
 import domain.Tetromino;
 import java.awt.Point;
 import java.util.List;
+import java.util.Timer;
 import java.util.TimerTask;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -37,9 +41,34 @@ public class TetrisUi extends Application {
         BorderPane bp = new BorderPane();
         bp.setCenter(canvas);
 
-        gc.setFill(Color.BLACK);
+        gc.setFill(Color.WHITE);
 
         tetris.newTetromino();
+
+        new AnimationTimer() {
+
+            long edellinen = 0;
+
+            @Override
+
+            public void handle(long nykyhetki) {
+
+                if (nykyhetki - edellinen < 100000000) {
+
+                    return;
+
+                }
+
+                gc.setFill(Color.WHITE);
+                gc.fillRect(0, 0, width, height);
+                drawMatrix(gc);
+                drawFaller(gc);
+
+                this.edellinen = nykyhetki;
+
+            }
+
+        }.start();
 
         new Thread() {
             @Override
@@ -48,7 +77,7 @@ public class TetrisUi extends Application {
                     try {
                         Thread.sleep(1000);
                         tetris.updateTetris();
-                        draw(gc);
+                        //drawMatrixText();
                     } catch (InterruptedException e) {
                     }
                 }
@@ -56,6 +85,30 @@ public class TetrisUi extends Application {
         }.start();
 
         Scene s = new Scene(bp);
+        s.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
+            if (key.getCode() == KeyCode.DOWN) {
+                tetris.updateTetris();
+            }
+        });
+
+        s.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
+            if (key.getCode() == KeyCode.LEFT) {
+                tetris.moveTetromino(-1);
+            }
+        });
+
+        s.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
+            if (key.getCode() == KeyCode.RIGHT) {
+                tetris.moveTetromino(1);
+            }
+        });
+
+        s.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
+            if (key.getCode() == KeyCode.SPACE) {
+                tetris.rotation();
+                System.out.println("SPACE");
+            }
+        });
 
         primaryStage.setScene(s);
 
@@ -64,11 +117,38 @@ public class TetrisUi extends Application {
         primaryStage.show();
     }
 
-    public void draw(GraphicsContext gc) {
-
+    
+    public void drawFaller(GraphicsContext gc) {
+        gc.setFill(Color.BLACK);
         for (Point p : tetris.getFaller().getTetromino()) {
             gc.fillRect(((p.x + tetris.getFaller().getOrigin().x) * scale), ((p.y + tetris.getFaller().getOrigin().y) * scale), scale, scale);
-            
+
+        }
+    }
+
+    public void drawMatrix(GraphicsContext gc) {
+        for (int y = 0; y < tetris.getMatrixHeight(); y++) {
+            for (int x = 0; x < tetris.getMatrixWidth(); x++) {
+                if (tetris.getMatrix()[y][x] == 1) {
+                    gc.setFill(Color.BLACK);
+                    gc.fillRect(x * scale, y * scale, scale, scale);
+                }
+            }
+        }
+    }
+
+    // help with debugging
+    public void drawMatrixText() {
+        System.out.println("");
+        for (int y = 0; y < tetris.getMatrixHeight(); y++) {
+            for (int x = 0; x < tetris.getMatrixWidth(); x++) {
+                if (tetris.getMatrix()[y][x] == 1) {
+                    System.out.print(1 + " ");
+                } else {
+                    System.out.print(0 + " ");
+                }
+            }
+            System.out.println("");
         }
     }
 
@@ -81,17 +161,4 @@ public class TetrisUi extends Application {
         launch(TetrisUi.class
         );
     }
-
-//    public class GameLoop extends TimerTask{
-//
-//        @Override
-//        public void run() {
-//            if (tetris.getFaller() == null) {
-//                
-//            } else {
-//                tetris.updateTetris();
-//            }
-//        }
-//    
-//}
 }

@@ -76,21 +76,30 @@ public class TetrisService {
         tetrominos[6] = new Tetromino(O);
 
     }
-
+    
+    // doubles as both making the tetromino fall and updating the fixed matrix pieces
     public void updateTetris() {
+
         if (!tetris.blocked(faller, faller.getOrigin().y + 1, faller.getOrigin().x)) {
             faller.dropDown();
         } else {
-            tetris.updateMatrix(this.faller);
+            System.out.println("UUSI PALA");
+            tetris.updateMatrix(faller);
+            newTetromino();
         }
+
     }
 
     public void moveTetromino(int i) {
         if (!tetris.blocked(faller, faller.getOrigin().y, faller.getOrigin().x + i)) {
             faller.move(i);
+
+        } else {
+            System.out.println("KOOPEE");
         }
     }
 
+    // fix this
     public void rotation() {
         Point[][] rotations = faller.getRotations();
 
@@ -104,22 +113,24 @@ public class TetrisService {
                     }
                 } else {
                     Tetromino newRotation = faller;
-                    newRotation.setTetromino(rotations[i]);
+                    newRotation.setTetromino(rotations[i + 1]);
                     if (!tetris.blocked(newRotation, newRotation.getOrigin().y, newRotation.getOrigin().x)) {
-                        faller.setTetromino(rotations[i]);
+                        faller.setTetromino(rotations[i + 1]);
                     }
                 }
 
             }
         }
     }
-
-    // change to random
+    
+    // origin needs to be reset, otherwise the current system will spawn a new tetromino 
+    // in the last spot of the same shape
     public void newTetromino() {
         Random r = new Random();
         int t = r.nextInt(7);
         int rotation = r.nextInt(4);
         Tetromino faller = tetrominos[t];
+        faller.setOrigin(4, 0);
         faller.setTetromino(faller.getRotations()[rotation]);
         this.faller = faller;
 
