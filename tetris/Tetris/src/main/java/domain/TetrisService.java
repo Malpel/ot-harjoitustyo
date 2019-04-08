@@ -1,5 +1,6 @@
 package domain;
 
+import javafx.scene.paint.Color;
 import java.awt.Point;
 import java.util.Random;
 
@@ -10,12 +11,13 @@ public class TetrisService {
     Tetromino faller;
     final int matrixWidth = 10;
     final int matrixHeight = 22;
-    final int canvasWidth = 350; //35 * matrixWidth
-    final int canvasHeight = 770; //35 * matrixHeight
-    final int scale = canvasHeight / matrixHeight;
+    final int canvasWidth = 350; // 35 * matrixWidth
+    final int canvasHeight = 770; // 35 * matrixHeight
+    final int scale = canvasHeight / matrixHeight; // scale is used to determine correct sizes for drawing
+    
 
-    public TetrisService() {
-        tetris = new Tetris(matrixWidth, matrixHeight);
+    public TetrisService(Color background) {
+        tetris = new Tetris(matrixWidth, matrixHeight, background);
         tetrominos = new Tetromino[7];
 
         Point[][] I = {
@@ -67,23 +69,22 @@ public class TetrisService {
             {new Point(0, 0), new Point(0, 1), new Point(1, 0), new Point(1, 1)}
         };
 
-        tetrominos[0] = new Tetromino(I);
-        tetrominos[1] = new Tetromino(T);
-        tetrominos[2] = new Tetromino(L);
-        tetrominos[3] = new Tetromino(J);
-        tetrominos[4] = new Tetromino(S);
-        tetrominos[5] = new Tetromino(Z);
-        tetrominos[6] = new Tetromino(O);
+        tetrominos[0] = new Tetromino(I, Color.CYAN);
+        tetrominos[1] = new Tetromino(T, Color.MAGENTA);
+        tetrominos[2] = new Tetromino(L, Color.ORANGE);
+        tetrominos[3] = new Tetromino(J, Color.BLUE);
+        tetrominos[4] = new Tetromino(S, Color.GREEN);
+        tetrominos[5] = new Tetromino(Z, Color.RED);
+        tetrominos[6] = new Tetromino(O, Color.YELLOW);
 
     }
-    
+
     // doubles as both making the tetromino fall and updating the fixed matrix pieces
     public void updateTetris() {
 
         if (!tetris.blocked(faller, faller.getOrigin().y + 1, faller.getOrigin().x)) {
             faller.dropDown();
         } else {
-            System.out.println("UUSI PALA");
             tetris.updateMatrix(faller);
             newTetromino();
         }
@@ -93,36 +94,29 @@ public class TetrisService {
     public void moveTetromino(int i) {
         if (!tetris.blocked(faller, faller.getOrigin().y, faller.getOrigin().x + i)) {
             faller.move(i);
-
-        } else {
-            System.out.println("KOOPEE");
         }
     }
 
-    // fix this
     public void rotation() {
         Point[][] rotations = faller.getRotations();
+        int rotation = faller.getRotation();
 
-        for (int i = 0; i < rotations.length; i++) {
-            if (rotations[i] == faller.getTetromino()) {
-                if (i + 1 >= rotations.length) {
-                    Tetromino newRotation = faller;
-                    newRotation.setTetromino(rotations[0]);
-                    if (!tetris.blocked(newRotation, newRotation.getOrigin().y, newRotation.getOrigin().x)) {
-                        faller.setTetromino(rotations[0]);
-                    }
-                } else {
-                    Tetromino newRotation = faller;
-                    newRotation.setTetromino(rotations[i + 1]);
-                    if (!tetris.blocked(newRotation, newRotation.getOrigin().y, newRotation.getOrigin().x)) {
-                        faller.setTetromino(rotations[i + 1]);
-                    }
-                }
-
-            }
+        if (rotation + 1 > 3) {
+            rotation = 0;
+        } else {
+            rotation += 1;
         }
+
+        Tetromino newRotation = new Tetromino(faller.getRotations(), faller.getColor());
+        newRotation.setTetromino(rotations[rotation]);
+
+        if (!tetris.blocked(newRotation, faller.getOrigin().y, faller.getOrigin().x)) {
+            faller.setTetromino(rotations[rotation]);
+            faller.rotation = rotation;
+        }
+
     }
-    
+
     // origin needs to be reset, otherwise the current system will spawn a new tetromino 
     // in the last spot of the same shape
     public void newTetromino() {
@@ -132,6 +126,7 @@ public class TetrisService {
         Tetromino faller = tetrominos[t];
         faller.setOrigin(4, 0);
         faller.setTetromino(faller.getRotations()[rotation]);
+        faller.rotation = rotation;
         this.faller = faller;
 
     }
@@ -160,7 +155,7 @@ public class TetrisService {
         return scale;
     }
 
-    public int[][] getMatrix() {
+    public Color[][] getMatrix() {
         return tetris.getMatrix();
     }
 

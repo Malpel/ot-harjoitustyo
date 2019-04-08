@@ -30,7 +30,7 @@ public class TetrisUi extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        tetris = new TetrisService();
+        tetris = new TetrisService(Color.WHITE);
         width = tetris.getCanvasWidth();
         height = tetris.getCanvasHeight();
         scale = tetris.getScale();
@@ -41,30 +41,28 @@ public class TetrisUi extends Application {
         BorderPane bp = new BorderPane();
         bp.setCenter(canvas);
 
-        gc.setFill(Color.WHITE);
-
         tetris.newTetromino();
 
         new AnimationTimer() {
 
-            long edellinen = 0;
+            long previous = 0;
 
             @Override
 
-            public void handle(long nykyhetki) {
+            public void handle(long now) {
 
-                if (nykyhetki - edellinen < 100000000) {
+                if (now - previous < 100000000) {
 
                     return;
 
                 }
 
-                gc.setFill(Color.WHITE);
-                gc.fillRect(0, 0, width, height);
+//                gc.setFill(Color.WHITE);
+//                gc.fillRect(0, 0, width, height);
                 drawMatrix(gc);
                 drawFaller(gc);
 
-                this.edellinen = nykyhetki;
+                this.previous = now;
 
             }
 
@@ -77,7 +75,6 @@ public class TetrisUi extends Application {
                     try {
                         Thread.sleep(1000);
                         tetris.updateTetris();
-                        //drawMatrixText();
                     } catch (InterruptedException e) {
                     }
                 }
@@ -106,7 +103,6 @@ public class TetrisUi extends Application {
         s.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             if (key.getCode() == KeyCode.SPACE) {
                 tetris.rotation();
-                System.out.println("SPACE");
             }
         });
 
@@ -117,9 +113,8 @@ public class TetrisUi extends Application {
         primaryStage.show();
     }
 
-    
     public void drawFaller(GraphicsContext gc) {
-        gc.setFill(Color.BLACK);
+        gc.setFill(tetris.getFaller().getColor());
         for (Point p : tetris.getFaller().getTetromino()) {
             gc.fillRect(((p.x + tetris.getFaller().getOrigin().x) * scale), ((p.y + tetris.getFaller().getOrigin().y) * scale), scale, scale);
 
@@ -129,26 +124,13 @@ public class TetrisUi extends Application {
     public void drawMatrix(GraphicsContext gc) {
         for (int y = 0; y < tetris.getMatrixHeight(); y++) {
             for (int x = 0; x < tetris.getMatrixWidth(); x++) {
-                if (tetris.getMatrix()[y][x] == 1) {
-                    gc.setFill(Color.BLACK);
-                    gc.fillRect(x * scale, y * scale, scale, scale);
-                }
+//                if (tetris.getMatrix()[y][x] == 1) {
+//                    gc.setFill(Color.BLACK);
+//                    gc.fillRect(x * scale, y * scale, scale, scale);
+//                }
+                gc.setFill(tetris.getMatrix()[y][x]);
+                gc.fillRect(x * scale, y * scale, scale, scale);
             }
-        }
-    }
-
-    // help with debugging
-    public void drawMatrixText() {
-        System.out.println("");
-        for (int y = 0; y < tetris.getMatrixHeight(); y++) {
-            for (int x = 0; x < tetris.getMatrixWidth(); x++) {
-                if (tetris.getMatrix()[y][x] == 1) {
-                    System.out.print(1 + " ");
-                } else {
-                    System.out.print(0 + " ");
-                }
-            }
-            System.out.println("");
         }
     }
 

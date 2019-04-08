@@ -4,3 +4,10 @@
 /laskarit/viikko2/Unicafe/nbproject/
 /tetris/Tetris/target/
 /tetris/Tetris/nbproject/
+.classpath
+.project
+.settings/
+/nbproject/
+target
+.vscode/
+nbactions.xml
