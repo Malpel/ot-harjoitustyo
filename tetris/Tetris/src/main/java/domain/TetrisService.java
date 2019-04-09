@@ -14,68 +14,67 @@ public class TetrisService {
     final int canvasWidth = 350; // 35 * matrixWidth
     final int canvasHeight = 770; // 35 * matrixHeight
     final int scale = canvasHeight / matrixHeight; // scale is used to determine correct sizes for drawing
-    
 
     public TetrisService(Color background) {
         tetris = new Tetris(matrixWidth, matrixHeight, background);
         tetrominos = new Tetromino[7];
 
-        Point[][] I = {
+        Point[][] tetrominoI = {
             {new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(3, 1)},
             {new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(1, 3)},
             {new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(3, 1)},
             {new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(1, 3)}
         };
 
-        Point[][] T = {
+        Point[][] tetrominoT = {
             {new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(2, 1)},
             {new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(1, 2)},
             {new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(1, 2)},
             {new Point(1, 0), new Point(1, 1), new Point(2, 1), new Point(1, 2)}
         };
 
-        Point[][] L = {
+        Point[][] tetrominoL = {
             {new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(2, 2)},
             {new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(0, 2)},
             {new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(0, 0)},
             {new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(2, 0)}
         };
 
-        Point[][] J = {
+        Point[][] tetrominoJ = {
             {new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(2, 0)},
             {new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(2, 2)},
             {new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(0, 2)},
             {new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(0, 0)}
         };
 
-        Point[][] S = {
+        Point[][] tetrominoS = {
             {new Point(1, 0), new Point(2, 0), new Point(0, 1), new Point(1, 1)},
             {new Point(0, 0), new Point(0, 1), new Point(1, 1), new Point(1, 2)},
             {new Point(1, 0), new Point(2, 0), new Point(0, 1), new Point(1, 1)},
             {new Point(0, 0), new Point(0, 1), new Point(1, 1), new Point(1, 2)}
         };
 
-        Point[][] Z = {
+        Point[][] tetrominoZ = {
             {new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(2, 1)},
             {new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(0, 2)},
             {new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(2, 1)},
             {new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(0, 2)}
         };
 
-        Point[][] O = {
+        Point[][] tetrominoO = {
             {new Point(0, 0), new Point(0, 1), new Point(1, 0), new Point(1, 1)},
             {new Point(0, 0), new Point(0, 1), new Point(1, 0), new Point(1, 1)},
             {new Point(0, 0), new Point(0, 1), new Point(1, 0), new Point(1, 1)},
             {new Point(0, 0), new Point(0, 1), new Point(1, 0), new Point(1, 1)}
         };
 
-        tetrominos[0] = new Tetromino(I, Color.CYAN);
-        tetrominos[1] = new Tetromino(T, Color.MAGENTA);
-        tetrominos[2] = new Tetromino(L, Color.ORANGE);
-        tetrominos[3] = new Tetromino(J, Color.BLUE);
-        tetrominos[4] = new Tetromino(S, Color.GREEN);
-        tetrominos[5] = new Tetromino(Z, Color.RED);
-        tetrominos[6] = new Tetromino(O, Color.YELLOW);
+        tetrominos[0] = new Tetromino(tetrominoI, Color.CYAN);
+        tetrominos[1] = new Tetromino(tetrominoT, Color.MAGENTA);
+        tetrominos[2] = new Tetromino(tetrominoL, Color.ORANGE);
+        tetrominos[3] = new Tetromino(tetrominoJ, Color.BLUE);
+        tetrominos[4] = new Tetromino(tetrominoS, Color.GREEN);
+        tetrominos[5] = new Tetromino(tetrominoZ, Color.RED);
+        tetrominos[6] = new Tetromino(tetrominoO, Color.YELLOW);
 
     }
 
@@ -130,6 +129,8 @@ public class TetrisService {
         this.faller = faller;
 
     }
+    
+    // TODO game over
 
     public Tetris getTetris() {
         return tetris;
@@ -160,7 +161,19 @@ public class TetrisService {
     }
 
     public Tetromino getFaller() {
-        return this.faller;
+        return faller;
+    }
+
+    public void setFaller(Tetromino faller) {
+        this.faller = faller;
+    }
+
+    public Tetromino[] getTetrominos() {
+        return tetrominos;
+    }
+
+    public void setTetrominos(Tetromino[] tetrominos) {
+        this.tetrominos = tetrominos;
     }
 
 }

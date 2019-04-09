@@ -1,15 +1,9 @@
 package ui;
 
-import domain.Tetris;
 import domain.TetrisService;
-import domain.Tetromino;
 import java.awt.Point;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -28,20 +22,22 @@ public class TetrisUi extends Application {
     TetrisService tetris;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-
+    public void init() {
         tetris = new TetrisService(Color.WHITE);
         width = tetris.getCanvasWidth();
         height = tetris.getCanvasHeight();
         scale = tetris.getScale();
+        tetris.newTetromino();
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
 
         Canvas canvas = new Canvas(width, height);
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
         BorderPane bp = new BorderPane();
         bp.setCenter(canvas);
-
-        tetris.newTetromino();
 
         new AnimationTimer() {
 
@@ -57,8 +53,8 @@ public class TetrisUi extends Application {
 
                 }
 
-//                gc.setFill(Color.WHITE);
-//                gc.fillRect(0, 0, width, height);
+                gc.setFill(Color.WHITE);
+                gc.fillRect(0, 0, width, height);
                 drawMatrix(gc);
                 drawFaller(gc);
 
@@ -124,10 +120,6 @@ public class TetrisUi extends Application {
     public void drawMatrix(GraphicsContext gc) {
         for (int y = 0; y < tetris.getMatrixHeight(); y++) {
             for (int x = 0; x < tetris.getMatrixWidth(); x++) {
-//                if (tetris.getMatrix()[y][x] == 1) {
-//                    gc.setFill(Color.BLACK);
-//                    gc.fillRect(x * scale, y * scale, scale, scale);
-//                }
                 gc.setFill(tetris.getMatrix()[y][x]);
                 gc.fillRect(x * scale, y * scale, scale, scale);
             }
