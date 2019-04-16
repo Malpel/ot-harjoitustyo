@@ -33,4 +33,4 @@ Tiedoston [checkstyle.xml](https://github.com/Malpel/ot-harjoitustyo/blob/master
 
 `mvn jxr:jxr checkstyle:checkstyle`
 
-Virheilmoituksia voi tarkastella  avaamalla *target/site/jacoco/index.html* selaimessa
+Virheilmoituksia voi tarkastella  avaamalla *target/site/checkstyle.html* selaimessa
