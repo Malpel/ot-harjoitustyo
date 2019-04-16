@@ -76,5 +76,16 @@ public class TetrisServiceTest {
         ts.moveTetromino(2);
         assertEquals(new Point(6,0), ts.getFaller().getOrigin());
     }
+    
+    @Test
+    public void scoreUpdatesCorrectly() {
+        ts.updateScore(1);
+        ts.updateScore(1);
+        ts.updateScore(1);
+        ts.updateScore(4);
+        ts.updateScore(2);
+        ts.updateScore(3);
+        assertEquals(1720, ts.getScore());
+    }
 
 }

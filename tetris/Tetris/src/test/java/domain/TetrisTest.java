@@ -17,7 +17,6 @@ public class TetrisTest {
     Tetris tetris;
     Tetromino[] tetrominos;
     Tetromino tetromino;
-    //Point origin;
 
     public TetrisTest() {
     }
@@ -136,8 +135,6 @@ public class TetrisTest {
 
         assertEquals(true, tetris.blocked(tetromino, tetromino.getOrigin().y, tetromino.getOrigin().x));
     }
-    
-    
 
     // can't test too full a matrix; removal algorithm is slow 
     @Test
@@ -172,23 +169,36 @@ public class TetrisTest {
         }
 
         for (int a = 1; a < tetris.width; a++) {
-            if (a % 2 == 0) {               
+            if (a % 2 == 0) {
                 tetris.getMatrix()[tetris.height - 3][a] = tetris.background;
             }
         }
-        
+
         tetris.checkFullRows();
-        
+
         boolean empty = true;
-        
+
         for (int i = 0; i < tetris.width; i++) {
-            if (tetris.getMatrix()[tetris.height-3][i] != tetris.background) {
+            if (tetris.getMatrix()[tetris.height - 3][i] != tetris.background) {
                 empty = false;
             }
         }
-        
+
         assertEquals(false, empty);
+
+    }
+
+    @Test
+    public void checkFullRowsCountsRowsCorrectly() {
+        for (int i = tetris.height - 5; i < tetris.height - 2; i++) {
+            for (int j = 0; j < tetris.width; j++) {
+                tetris.getMatrix()[i][j] = Color.ALICEBLUE;
+            }
+        }
         
+        int fullRows = tetris.checkFullRows();
+        
+        assertEquals(3, fullRows);
     }
 
 }

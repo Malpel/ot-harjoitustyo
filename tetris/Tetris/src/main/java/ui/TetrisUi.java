@@ -4,12 +4,21 @@ import domain.TetrisService;
 import java.awt.Point;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -23,7 +32,7 @@ public class TetrisUi extends Application {
 
     @Override
     public void init() {
-        tetris = new TetrisService(Color.WHITE);
+        tetris = new TetrisService(Color.BEIGE);
         width = tetris.getCanvasWidth();
         height = tetris.getCanvasHeight();
         scale = tetris.getScale();
@@ -38,6 +47,16 @@ public class TetrisUi extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         BorderPane bp = new BorderPane();
         bp.setCenter(canvas);
+        VBox reuna = new VBox();
+        Label scoreLabel = new Label();
+        IntegerProperty score = new SimpleIntegerProperty(0);
+        scoreLabel.textProperty().bind(Bindings.createStringBinding(() -> ("Score: " + tetris.getScore()), score));
+        reuna.getChildren().addAll(new Label("Tetris"), scoreLabel, new Label("Time: 22.22"));
+        reuna.setAlignment(Pos.CENTER);
+        reuna.setPadding(new Insets(15, 12, 15, 12));
+        reuna.setSpacing(10);
+        reuna.setStyle("-fx-background-color: #336699");
+        bp.setLeft(reuna);
 
         new AnimationTimer() {
 
@@ -57,7 +76,7 @@ public class TetrisUi extends Application {
                 gc.fillRect(0, 0, width, height);
                 drawMatrix(gc);
                 drawFaller(gc);
-
+                scoreLabel.textProperty().bind(Bindings.createStringBinding(() -> ("Score: " + tetris.getScore()), score));
                 this.previous = now;
 
             }
@@ -71,6 +90,7 @@ public class TetrisUi extends Application {
                     try {
                         Thread.sleep(1000);
                         tetris.updateTetris();
+
                     } catch (InterruptedException e) {
                     }
                 }

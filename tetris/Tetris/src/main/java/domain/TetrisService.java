@@ -14,6 +14,8 @@ public class TetrisService {
     final int canvasWidth = 350; // 35 * matrixWidth
     final int canvasHeight = 770; // 35 * matrixHeight
     final int scale = canvasHeight / matrixHeight; // scale is used to determine correct sizes for drawing
+    int score;
+    long elapsedTime;
 
     public TetrisService(Color background) {
         tetris = new Tetris(matrixWidth, matrixHeight, background);
@@ -76,6 +78,8 @@ public class TetrisService {
         tetrominos[5] = new Tetromino(tetrominoZ, Color.RED);
         tetrominos[6] = new Tetromino(tetrominoO, Color.YELLOW);
 
+        score = 0;
+        elapsedTime = 0;
     }
 
     // doubles as both making the tetromino fall and updating the fixed matrix pieces
@@ -84,10 +88,28 @@ public class TetrisService {
         if (!tetris.blocked(faller, faller.getOrigin().y + 1, faller.getOrigin().x)) {
             faller.dropDown();
         } else {
-            tetris.updateMatrix(faller);
+            int fullRows = tetris.updateMatrix(faller); // score here
+            updateScore(fullRows);
             newTetromino();
         }
 
+    }
+
+    public void updateScore(int i) {
+        switch (i) {
+            case 1:
+                score += 40;
+                break;
+            case 2:
+                score += 100;
+                break;
+            case 3:
+                score += 300;
+                break;
+            case 4:
+                score += 1200;
+                break;
+        }
     }
 
     public void moveTetromino(int i) {
@@ -129,8 +151,15 @@ public class TetrisService {
         this.faller = faller;
 
     }
-    
+
     // TODO game over
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
 
     public Tetris getTetris() {
         return tetris;

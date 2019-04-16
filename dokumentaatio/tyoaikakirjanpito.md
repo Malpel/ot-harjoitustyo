@@ -9,5 +9,6 @@
 | 07.04 | 2h 30min  | collision detection, javafx:n ja bugien korjausta
 | 08.04 | 3h 35min  | rivien poisto, värit, palan kiertäminen, checkstyle
 | 09.04 | 4h 10min  | suunnittelua, testejä, luokkakaavio, pieniä muutoksia, tappelua teknologian kanssa
-| yht | 25h 50min  | 
+| 16.04 | 3h  | pisteiden lasku ja näyttäminen, pari testiä, kokeiluja
+| yht | 28h 50min  | 
 
