@@ -156,6 +156,7 @@ public class TetrisUi extends Application {
 
     @Override
     public void stop() {
+        closing = true;
         System.out.println("Sulkeutuu");
         
         
