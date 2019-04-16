@@ -20,6 +20,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class TetrisUi extends Application {
@@ -32,7 +33,7 @@ public class TetrisUi extends Application {
 
     @Override
     public void init() {
-        tetris = new TetrisService(Color.BEIGE);
+        tetris = new TetrisService(Color.rgb(43, 42, 42));
         width = tetris.getCanvasWidth();
         height = tetris.getCanvasHeight();
         scale = tetris.getScale();
@@ -47,16 +48,19 @@ public class TetrisUi extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         BorderPane bp = new BorderPane();
         bp.setCenter(canvas);
-        VBox reuna = new VBox();
+        VBox leftBorder = new VBox();
         Label scoreLabel = new Label();
         IntegerProperty score = new SimpleIntegerProperty(0);
+
         scoreLabel.textProperty().bind(Bindings.createStringBinding(() -> ("Score: " + tetris.getScore()), score));
-        reuna.getChildren().addAll(new Label("Tetris"), scoreLabel, new Label("Time: 22.22"));
-        reuna.setAlignment(Pos.CENTER);
-        reuna.setPadding(new Insets(15, 12, 15, 12));
-        reuna.setSpacing(10);
-        reuna.setStyle("-fx-background-color: #336699");
-        bp.setLeft(reuna);
+
+        leftBorder.getChildren().addAll(new Label("Tetris"), scoreLabel, new Label("Time: 22.22"));
+        leftBorder.setAlignment(Pos.CENTER);
+        leftBorder.setPadding(new Insets(15, 12, 15, 12));
+        leftBorder.setSpacing(10);
+        leftBorder.setStyle("-fx-background-color: #FFFFFF");
+
+        bp.setLeft(leftBorder);
 
         new AnimationTimer() {
 
@@ -77,6 +81,7 @@ public class TetrisUi extends Application {
                 drawMatrix(gc);
                 drawFaller(gc);
                 scoreLabel.textProperty().bind(Bindings.createStringBinding(() -> ("Score: " + tetris.getScore()), score));
+
                 this.previous = now;
 
             }
@@ -86,11 +91,10 @@ public class TetrisUi extends Application {
         new Thread() {
             @Override
             public void run() {
-                while (true) {
+                while (!tetris.isGameOver()) {
                     try {
                         Thread.sleep(1000);
                         tetris.updateTetris();
-
                     } catch (InterruptedException e) {
                     }
                 }
@@ -130,11 +134,13 @@ public class TetrisUi extends Application {
     }
 
     public void drawFaller(GraphicsContext gc) {
+
         gc.setFill(tetris.getFaller().getColor());
         for (Point p : tetris.getFaller().getTetromino()) {
             gc.fillRect(((p.x + tetris.getFaller().getOrigin().x) * scale), ((p.y + tetris.getFaller().getOrigin().y) * scale), scale, scale);
 
         }
+
     }
 
     public void drawMatrix(GraphicsContext gc) {

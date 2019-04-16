@@ -114,4 +114,12 @@ public class Tetris {
         return fullRows;
     }
 
+    public void fillMatrix() {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                matrix[y][x] = Color.BLACK;
+            }
+        }
+    }
+
 }

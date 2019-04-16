@@ -15,7 +15,7 @@ public class TetrisService {
     final int canvasHeight = 770; // 35 * matrixHeight
     final int scale = canvasHeight / matrixHeight; // scale is used to determine correct sizes for drawing
     int score;
-    long elapsedTime;
+    boolean gameOver;
 
     public TetrisService(Color background) {
         tetris = new Tetris(matrixWidth, matrixHeight, background);
@@ -71,15 +71,15 @@ public class TetrisService {
         };
 
         tetrominos[0] = new Tetromino(tetrominoI, Color.CYAN);
-        tetrominos[1] = new Tetromino(tetrominoT, Color.MAGENTA);
+        tetrominos[1] = new Tetromino(tetrominoT, Color.DEEPPINK);
         tetrominos[2] = new Tetromino(tetrominoL, Color.ORANGE);
-        tetrominos[3] = new Tetromino(tetrominoJ, Color.BLUE);
-        tetrominos[4] = new Tetromino(tetrominoS, Color.GREEN);
+        tetrominos[3] = new Tetromino(tetrominoJ, Color.ROYALBLUE);
+        tetrominos[4] = new Tetromino(tetrominoS, Color.FORESTGREEN);
         tetrominos[5] = new Tetromino(tetrominoZ, Color.RED);
-        tetrominos[6] = new Tetromino(tetrominoO, Color.YELLOW);
+        tetrominos[6] = new Tetromino(tetrominoO, Color.GOLD);
 
         score = 0;
-        elapsedTime = 0;
+        gameOver = false;
     }
 
     // doubles as both making the tetromino fall and updating the fixed matrix pieces
@@ -88,9 +88,14 @@ public class TetrisService {
         if (!tetris.blocked(faller, faller.getOrigin().y + 1, faller.getOrigin().x)) {
             faller.dropDown();
         } else {
-            int fullRows = tetris.updateMatrix(faller); // score here
+            int fullRows = tetris.updateMatrix(faller);
             updateScore(fullRows);
             newTetromino();
+            if (tetris.blocked(faller, faller.getOrigin().y, faller.getOrigin().x)) {
+                gameOver();
+                System.out.println("Yeah");
+            }
+
         }
 
     }
@@ -153,6 +158,10 @@ public class TetrisService {
     }
 
     // TODO game over
+    public void gameOver() {
+        gameOver = true;
+    }
+
     public int getScore() {
         return score;
     }
@@ -203,6 +212,14 @@ public class TetrisService {
 
     public void setTetrominos(Tetromino[] tetrominos) {
         this.tetrominos = tetrominos;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
     }
 
 }

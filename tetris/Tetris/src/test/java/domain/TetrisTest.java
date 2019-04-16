@@ -195,9 +195,9 @@ public class TetrisTest {
                 tetris.getMatrix()[i][j] = Color.ALICEBLUE;
             }
         }
-        
+
         int fullRows = tetris.checkFullRows();
-        
+
         assertEquals(3, fullRows);
     }
 

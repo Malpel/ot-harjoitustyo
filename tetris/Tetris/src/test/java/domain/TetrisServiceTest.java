@@ -39,9 +39,8 @@ public class TetrisServiceTest {
 
     }
 
-
     @Test
-    public void newTetrominoSetsFaller() {        
+    public void newTetrominoSetsFaller() {
         assertThat(ts.getFaller(), is(not(equalTo(null))));
     }
 
@@ -50,33 +49,33 @@ public class TetrisServiceTest {
         ts.updateTetris();
         assertEquals(new Point(4, 1), ts.getFaller().getOrigin());
     }
-    
+
     @Test
     public void rotationUpdatesTetrominoPoints() {
         Point[] beforeRotation = ts.getFaller().getTetromino();
         ts.rotation();
         assertThat(ts.getFaller().getRotation(), is(not(beforeRotation)));
     }
-    
-    @Test 
+
+    @Test
     public void rotationUpdatesTetrominoRotation() {
         int beforeRotation = ts.getFaller().rotation;
         ts.rotation();
         assertThat(ts.getFaller().getRotation(), is(not(beforeRotation)));
     }
-    
+
     @Test
     public void moveTetrominoMovesTetrominoLeft() {
         ts.moveTetromino(-2);
-        assertEquals(new Point(2,0), ts.getFaller().getOrigin());
+        assertEquals(new Point(2, 0), ts.getFaller().getOrigin());
     }
-    
+
     @Test
     public void moveTetrominoMovesTetrominoRight() {
         ts.moveTetromino(2);
-        assertEquals(new Point(6,0), ts.getFaller().getOrigin());
+        assertEquals(new Point(6, 0), ts.getFaller().getOrigin());
     }
-    
+
     @Test
     public void scoreUpdatesCorrectly() {
         ts.updateScore(1);

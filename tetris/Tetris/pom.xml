@@ -28,7 +28,7 @@
                 <configuration>
                     <excludes>
                         <exclude>
-                            Tetris/ui/*
+                            /ui/*
                         </exclude>
                     </excludes>
                 </configuration>
