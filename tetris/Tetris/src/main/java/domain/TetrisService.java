@@ -93,7 +93,6 @@ public class TetrisService {
             newTetromino();
             if (tetris.blocked(faller, faller.getOrigin().y, faller.getOrigin().x)) {
                 gameOver();
-                System.out.println("Yeah");
             }
 
         }
