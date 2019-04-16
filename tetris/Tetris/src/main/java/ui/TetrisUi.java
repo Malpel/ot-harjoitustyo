@@ -27,6 +27,7 @@ public class TetrisUi extends Application {
     int scale;
     int time;
     TetrisService tetris;
+    boolean closing;
 
     @Override
     public void init() {
@@ -72,6 +73,7 @@ public class TetrisUi extends Application {
                     return;
 
                 } else if (tetris.isGameOver()) {
+                    closing = true;
                     stop();
                 }
 
@@ -90,7 +92,8 @@ public class TetrisUi extends Application {
         new Thread() {
             @Override
             public void run() {
-                while (!tetris.isGameOver()) {
+                while (!tetris.isGameOver() && !closing) {
+
                     try {
                         Thread.sleep(1000);
                         tetris.updateTetris();
@@ -154,6 +157,9 @@ public class TetrisUi extends Application {
     @Override
     public void stop() {
         System.out.println("Sulkeutuu");
+        
+        
+
     }
 
     public static void main(String[] args) {
