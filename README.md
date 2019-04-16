@@ -13,6 +13,11 @@
 [Työaikakirjanpito](https://github.com/Malpel/ot-harjoitustyo/blob/master/dokumentaatio/tyoaikakirjanpito.md)
 
 
+## Release
+
+[Viikko 5](https://github.com/Malpel/ot-harjoitustyo/releases/tag/viikko5)
+
+
 ## Komentorivi
 
 ### Testaus
