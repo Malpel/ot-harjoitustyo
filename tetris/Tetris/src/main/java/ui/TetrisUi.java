@@ -12,12 +12,17 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 public class TetrisUi extends Application {
@@ -44,13 +49,15 @@ public class TetrisUi extends Application {
         Canvas canvas = new Canvas(width, height);
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        BorderPane bp = new BorderPane();
-        bp.setCenter(canvas);
+        BorderPane gameBoard = new BorderPane();
+        gameBoard.setCenter(canvas);
         VBox leftBorder = new VBox();
         Label scoreLabel = new Label();
+        Label scoreLabel2 = new Label();
         IntegerProperty score = new SimpleIntegerProperty(0);
 
         scoreLabel.textProperty().bind(Bindings.createStringBinding(() -> ("Score: " + tetris.getScore()), score));
+        scoreLabel2.textProperty().bind(Bindings.createStringBinding(() -> (String.valueOf(tetris.getScore())), score));
 
         leftBorder.getChildren().addAll(new Label("Tetris"), scoreLabel, new Label("Time: 22.22"));
         leftBorder.setAlignment(Pos.CENTER);
@@ -58,77 +65,117 @@ public class TetrisUi extends Application {
         leftBorder.setSpacing(10);
         leftBorder.setStyle("-fx-background-color: #FFFFFF");
 
-        bp.setLeft(leftBorder);
+        gameBoard.setLeft(leftBorder);
 
-        new AnimationTimer() {
+        Scene gameLoop = new Scene(gameBoard);
 
-            long previous = 0;
+        BorderPane scorePane = new BorderPane();
+        scorePane.setPrefSize(width, height);
 
-            @Override
+        Popup popup = new Popup();
+        VBox scoreBox = new VBox();
+        scoreBox.setSpacing(10);
+        Button submitScore = new Button("Submit");
+        scoreBox.getChildren().addAll(new Label("nickname: "), new TextField(), scoreLabel2);
+        scoreBox.setStyle("-fx-background-color: #FFFFFF");
+        scoreBox.setPadding(new Insets(15, 15, 15, 15));
+        popup.getContent().addAll(scoreBox);
 
-            public void handle(long now) {
+        Button startGame = new Button("Start game");
+        startGame.setOnAction((event) -> {
 
-                if (now - previous < 100000000) {
+            primaryStage.setScene(gameLoop);
+            new AnimationTimer() {
 
-                    return;
+                long previous = 0;
 
-                } else if (tetris.isGameOver()) {
-                    closing = true;
-                    stop();
+                @Override
+
+                public void handle(long now) {
+
+                    if (now - previous < 100000000) {
+
+                        return;
+
+                    } else if (tetris.isGameOver()) {
+                        closing = true;
+                        stop();
+                        scoreLabel2.textProperty().bind(Bindings.createStringBinding(() -> ("Your score: " + tetris.getScore()), score));
+
+                        popup.show(primaryStage);
+                    }
+
+                    gc.setFill(Color.WHITE);
+                    gc.fillRect(0, 0, width, height);
+                    drawMatrix(gc);
+                    drawFaller(gc);
+                    scoreLabel.textProperty().bind(Bindings.createStringBinding(() -> ("Score: " + tetris.getScore()), score));
+
+                    this.previous = now;
+
                 }
 
-                gc.setFill(Color.WHITE);
-                gc.fillRect(0, 0, width, height);
-                drawMatrix(gc);
-                drawFaller(gc);
-                scoreLabel.textProperty().bind(Bindings.createStringBinding(() -> ("Score: " + tetris.getScore()), score));
+            }.start();
 
-                this.previous = now;
+            new Thread() {
+                @Override
+                public void run() {
+                    while (!tetris.isGameOver() && !closing) {
 
-            }
-
-        }.start();
-
-        new Thread() {
-            @Override
-            public void run() {
-                while (!tetris.isGameOver() && !closing) {
-
-                    try {
-                        Thread.sleep(1000);
-                        tetris.updateTetris();
-                    } catch (InterruptedException e) {
+                        try {
+                            Thread.sleep(1000);
+                            tetris.updateTetris();
+                        } catch (InterruptedException e) {
+                        }
                     }
                 }
-            }
-        }.start();
+            }.start();
+        });
 
-        Scene s = new Scene(bp);
-        s.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
+        Scene scoreboard = new Scene(scorePane);
+
+        Button highscores = new Button("Highscores");
+        highscores.setOnAction((event) -> {
+            primaryStage.setScene(scoreboard);
+        });
+
+        VBox startSet = new VBox();
+        startSet.getChildren().addAll(startGame, highscores);
+
+        Scene start = new Scene(startSet);
+
+        Button backToStart = new Button("Back");
+        backToStart.setOnAction((event) -> {
+            primaryStage.setScene(start);
+        });
+
+        scorePane.setBottom(backToStart);
+
+        gameLoop.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             if (key.getCode() == KeyCode.DOWN) {
                 tetris.updateTetris();
             }
         });
 
-        s.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
+        gameLoop.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             if (key.getCode() == KeyCode.LEFT) {
                 tetris.moveTetromino(-1);
             }
         });
 
-        s.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
+        gameLoop.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             if (key.getCode() == KeyCode.RIGHT) {
                 tetris.moveTetromino(1);
             }
         });
 
-        s.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
+        gameLoop.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             if (key.getCode() == KeyCode.SPACE) {
                 tetris.rotation();
             }
         });
 
-        primaryStage.setScene(s);
+        primaryStage.setScene(start);
 
         primaryStage.setTitle(
                 "Tetris");
@@ -136,7 +183,6 @@ public class TetrisUi extends Application {
     }
 
     public void drawFaller(GraphicsContext gc) {
-
         gc.setFill(tetris.getFaller().getColor());
         for (Point p : tetris.getFaller().getTetromino()) {
             gc.fillRect(((p.x + tetris.getFaller().getOrigin().x) * scale), ((p.y + tetris.getFaller().getOrigin().y) * scale), scale, scale);
@@ -157,9 +203,6 @@ public class TetrisUi extends Application {
     @Override
     public void stop() {
         closing = true;
-        System.out.println("Sulkeutuu");
-        
-        
 
     }
 
