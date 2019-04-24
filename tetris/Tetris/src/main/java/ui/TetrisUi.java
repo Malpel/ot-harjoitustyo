@@ -75,8 +75,14 @@ public class TetrisUi extends Application {
         Popup popup = new Popup();
         VBox scoreBox = new VBox();
         scoreBox.setSpacing(10);
+        
         Button submitScore = new Button("Submit");
-        scoreBox.getChildren().addAll(new Label("nickname: "), new TextField(), scoreLabel2);
+        submitScore.setOnAction((event) -> {
+            // TODO submit through tetriservice to database
+            primaryStage.setScene(gameLoop);
+        });
+        
+        scoreBox.getChildren().addAll(new Label("nickname: "), new TextField(), scoreLabel2, submitScore);
         scoreBox.setStyle("-fx-background-color: #FFFFFF");
         scoreBox.setPadding(new Insets(15, 15, 15, 15));
         popup.getContent().addAll(scoreBox);
