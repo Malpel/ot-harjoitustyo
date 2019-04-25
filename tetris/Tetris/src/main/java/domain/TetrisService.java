@@ -1,7 +1,10 @@
 package domain;
 
+import dao.HighscoreDao;
 import javafx.scene.paint.Color;
 import java.awt.Point;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Random;
 
 public class TetrisService {
@@ -16,6 +19,8 @@ public class TetrisService {
     final int scale = canvasHeight / matrixHeight; // scale is used to determine correct sizes for drawing
     int score;
     boolean gameOver;
+    HighscoreDao hsDao;
+    final String DATABASE_URL = "jdbc:sqlite:tetris.db";
 
     public TetrisService(Color background) {
         tetris = new Tetris(matrixWidth, matrixHeight, background);
@@ -80,6 +85,8 @@ public class TetrisService {
 
         score = 0;
         gameOver = false;
+        
+        hsDao = new HighscoreDao(DATABASE_URL);
     }
 
     // doubles as both making the tetromino fall and updating the fixed matrix pieces
@@ -154,6 +161,14 @@ public class TetrisService {
         faller.rotation = rotation;
         this.faller = faller;
 
+    }
+    
+    public void saveScore(String name) throws SQLException {
+        hsDao.create(name, score);
+    }
+    
+    public List<String> getHighscores() throws SQLException {
+        return hsDao.findAll();
     }
 
     // TODO game over

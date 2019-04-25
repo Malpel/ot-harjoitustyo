@@ -79,6 +79,7 @@ public class TetrisUi extends Application {
         Button submitScore = new Button("Submit");
         submitScore.setOnAction((event) -> {
             // TODO submit through tetriservice to database
+            
             primaryStage.setScene(gameLoop);
         });
         
@@ -142,6 +143,7 @@ public class TetrisUi extends Application {
 
         Button highscores = new Button("Highscores");
         highscores.setOnAction((event) -> {
+            
             primaryStage.setScene(scoreboard);
         });
 

@@ -11,3 +11,4 @@
 target
 .vscode/
 /tetris/Tetris/nbactions.xml
+/tetris/Tetris/tetris.db
