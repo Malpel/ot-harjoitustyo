@@ -1,6 +1,6 @@
 # Käyttöohje
 
-Laata tiedosto [tetris_R2.jar](https:github.com/Malpel/ot-harjoitustyo/releases/tag/viikko6)
+Laata tiedosto [tetris_R2.jar](https://github.com/Malpel/ot-harjoitustyo/releases/tag/viikko6)
 
 Ohjelma käynnistetään tuplaklikkaamalla tetris_R2.jaria 
 
