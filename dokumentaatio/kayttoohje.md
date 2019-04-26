@@ -2,11 +2,11 @@
 
 Laata tiedosto [placeholder](https:github.com/Malpel/ot-harjoitustyo/releases/tag/viikko6)
 
-Ohjelma käynnistetään tuplaklikkaamalla tetris-R2.jaria 
+Ohjelma käynnistetään tuplaklikkaamalla tetris_R2.jaria 
 
 tai komennolla
 
-`java -jar tetris-R2.jar`
+`java -jar tetris_R2.jar`
 
 ## Aloitusruutu
 
