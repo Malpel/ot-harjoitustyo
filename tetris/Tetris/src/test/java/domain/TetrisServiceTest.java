@@ -30,7 +30,7 @@ public class TetrisServiceTest {
     @Before
     public void setUp() {
 
-        ts = new TetrisService(Color.WHITE);
+        ts = new TetrisService();
         ts.newTetromino();
     }
 
@@ -59,7 +59,7 @@ public class TetrisServiceTest {
 
     @Test
     public void rotationUpdatesTetrominoRotation() {
-        int beforeRotation = ts.getFaller().rotation;
+        int beforeRotation = ts.getFaller().getRotation();
         ts.rotation();
         assertThat(ts.getFaller().getRotation(), is(not(beforeRotation)));
     }
@@ -85,6 +85,6 @@ public class TetrisServiceTest {
         ts.updateScore(2);
         ts.updateScore(3);
         assertEquals(1720, ts.getScore());
-    }
+    }    
 
 }

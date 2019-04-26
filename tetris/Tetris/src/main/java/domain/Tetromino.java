@@ -1,18 +1,21 @@
 package domain;
 
-
 import javafx.scene.paint.Color;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Tetromino class takes care of the coordinates and the current rotation/shape of the falling piece.
+ * 
+ */
 public class Tetromino {
 
-    Point[][] rotations;
-    Point[] tetromino;
-    Point origin;
-    Color color;
-    int rotation;
+    private Point[][] rotations;
+    private Point[] tetromino;
+    private Point origin;
+    private Color color;
+    private int rotation;
 
     public Tetromino(Point[][] t, Color color) {
         origin = new Point(4, 0);
@@ -20,7 +23,7 @@ public class Tetromino {
         tetromino = new Point[4];
         this.color = color;
     }
-    
+
     public Point[][] getRotations() {
         return rotations;
     }
@@ -37,6 +40,11 @@ public class Tetromino {
         this.tetromino = tetromino;
     }
 
+    /**
+     * Origin is used to calculate everything movement related.
+     * 
+     * @return Coordinates.
+     */
     public Point getOrigin() {
         return this.origin;
     }
@@ -61,12 +69,21 @@ public class Tetromino {
     public void setRotation(int rotation) {
         this.rotation = rotation;
     }
-    
 
+    /**
+     * Changes the horizontal position; negative values move the piece left,
+     * positive values to the right.
+     *
+     *
+     * @param i the amount of movement (-1 or 1 in practice)
+     */
     public void move(int i) {
         this.origin.x += i;
     }
 
+    /**
+     * Increments vertical position by one; makes the piece fall.
+     */
     public void dropDown() {
         this.origin.y += 1;
     }

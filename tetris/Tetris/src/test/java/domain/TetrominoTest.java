@@ -98,7 +98,7 @@ public class TetrominoTest {
         Tetromino faller = tetrominos[t];
         faller.setOrigin(4, 0);
         faller.setTetromino(faller.getRotations()[rotation]);
-        faller.rotation = rotation;
+        faller.setRotation(rotation);
         testSubject = faller;
 
     }

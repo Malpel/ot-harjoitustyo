@@ -9,12 +9,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HighscoreDao implements Dao {
+/**
+ * Handles the database access for high scores. Checks for existing table in the database. Uses Sqlite.
+ */
+public class ScoreDao implements Dao {
 
-    String url;
-    String createTable;
+    private String url;
+    private String createTable;
 
-    public HighscoreDao(String databaseUrl) {
+    public ScoreDao(String databaseUrl) {
 
         url = databaseUrl;
         createTable = "CREATE TABLE IF NOT EXISTS highscores (id integer PRIMARY KEY, name text NOT NULL, score integer NOT NULL)";
@@ -28,6 +31,13 @@ public class HighscoreDao implements Dao {
         }
 
     }
+    
+    /**
+     * Create a new database record for a score.
+     * @param name Username
+     * @param score Score
+     * @throws SQLException SQLException
+     */
 
     @Override
     public void create(String name, int score) throws SQLException {
@@ -46,6 +56,11 @@ public class HighscoreDao implements Dao {
 
     }
 
+    /**
+     * Retrieve all scores from the database.
+     * @return List of all saved scores.
+     * @throws SQLException SQLException 
+     */
     @Override
     public List<String> findAll() throws SQLException {
 

@@ -14,15 +14,15 @@ import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
-public class HighscoreDaoTest {
+public class ScoreDaoTest {
     
     @Rule
     public TemporaryFolder temp = new TemporaryFolder();
 
     String url;
-    HighscoreDao dao;
+    ScoreDao dao;
 
-    public HighscoreDaoTest() {
+    public ScoreDaoTest() {
     }
 
     @BeforeClass
@@ -37,7 +37,7 @@ public class HighscoreDaoTest {
     public void setUp() {
 
         url = "jdbc:sqlite:" + temp.getRoot().getAbsolutePath() + "/temp";
-        dao = new HighscoreDao(url);
+        dao = new ScoreDao(url);
 
     }
 
@@ -47,13 +47,13 @@ public class HighscoreDaoTest {
     }
 
     @Test
-    public void newHighscoresAreAdded() throws SQLException {
+    public void newScoresAreAdded() throws SQLException {
         try {
             dao.create("Cao Cao", 7777);
             dao.create("Tester", 9876);
             dao.create("Lann", 5674);
         } catch (SQLException ex) {
-            Logger.getLogger(HighscoreDaoTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScoreDaoTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         assertEquals(3, dao.findAll().size());
@@ -69,11 +69,7 @@ public class HighscoreDaoTest {
             dao.create("Lann", 5674);
             list = dao.findAll();
         } catch (SQLException ex) {
-            Logger.getLogger(HighscoreDaoTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        for (String s : list) {
-            System.out.println(s);
+            Logger.getLogger(ScoreDaoTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         assertTrue(list.get(0).equals("Tester 9876"));
@@ -89,7 +85,7 @@ public class HighscoreDaoTest {
         try {
             list = dao.findAll();
         } catch (SQLException ex) {
-            Logger.getLogger(HighscoreDaoTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScoreDaoTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         assertFalse(list.equals(null));

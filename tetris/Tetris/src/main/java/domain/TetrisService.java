@@ -1,29 +1,38 @@
 package domain;
 
-import dao.HighscoreDao;
+import dao.ScoreDao;
 import javafx.scene.paint.Color;
 import java.awt.Point;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * The main backend workhorse for the program. Handles the coordination between the TetrisUi and
+ * Tetris, Tetromino, and ScoreDao classes.
+ *
+ * @see Tetris
+ * @see Tetromino
+ * @see ScoreDao
+ */
 public class TetrisService {
 
-    Tetris tetris;
-    Tetromino[] tetrominos;
-    Tetromino faller;
-    final int matrixWidth = 10;
-    final int matrixHeight = 22;
-    final int canvasWidth = 350; // 35 * matrixWidth
-    final int canvasHeight = 770; // 35 * matrixHeight
-    final int scale = canvasHeight / matrixHeight; // scale is used to determine correct sizes for drawing
-    int score;
-    boolean gameOver;
-    HighscoreDao hsDao;
-    final String DATABASE_URL = "jdbc:sqlite:tetris.db";
+    private Tetris tetris;
+    private Tetromino[] tetrominos;
+    private Tetromino faller;
+    private final int matrixWidth = 10;
+    private final int matrixHeight = 22;
+    private final int canvasWidth = 350; // 35 * matrixWidth
+    private final int cavasHeight = 600; // 35 * matrixHeight
+    private final int scale = cavasHeight / matrixHeight; // scale is used to determine correct sizes for drawing
+    private int score;
+    private boolean gameOver;
+    private ScoreDao hsDao;
+    private final String databaseUrl = "jdbc:sqlite:tetris.db";
+    private final Color background = Color.rgb(43, 42, 42);
 
-    public TetrisService(Color background) {
-        tetris = new Tetris(matrixWidth, matrixHeight, background);
+    public TetrisService() {
+
         tetrominos = new Tetromino[7];
 
         Point[][] tetrominoI = {
@@ -83,13 +92,22 @@ public class TetrisService {
         tetrominos[5] = new Tetromino(tetrominoZ, Color.RED);
         tetrominos[6] = new Tetromino(tetrominoO, Color.GOLD);
 
-        score = 0;
-        gameOver = false;
-        
-        hsDao = new HighscoreDao(DATABASE_URL);
+        reset();
+
     }
 
-    // doubles as both making the tetromino fall and updating the fixed matrix pieces
+    
+    // 
+    /**
+     * Updates the game state. Either makes the tetromino fall or fixes it to
+     * the matrix, updates the score if needed, and checks if game is over.
+     *
+     * @see Tetromino#dropDown()
+     * @see Tetris#blocked(domain.Tetromino, int, int)
+     * @see Tetris#updateMatrix(domain.Tetromino)
+     * @see #updateScore(int)
+     * @see #newTetromino()
+     */
     public void updateTetris() {
 
         if (!tetris.blocked(faller, faller.getOrigin().y + 1, faller.getOrigin().x)) {
@@ -99,13 +117,17 @@ public class TetrisService {
             updateScore(fullRows);
             newTetromino();
             if (tetris.blocked(faller, faller.getOrigin().y, faller.getOrigin().x)) {
-                gameOver();
+                gameOver = true;
             }
-
         }
-
     }
 
+    
+    /**
+     * Updates the score.
+     *
+     * @param i The amount of full rows.
+     */
     public void updateScore(int i) {
         switch (i) {
             case 1:
@@ -123,12 +145,27 @@ public class TetrisService {
         }
     }
 
+    
+    /**
+     * Checks that the move is legitimate.
+     *
+     * @param i Either -1 or 1 in practice, move one to left or right.
+     * @see Tetromino#move(int)
+     * @see Tetris#blocked(domain.Tetromino, int, int)
+     */
     public void moveTetromino(int i) {
         if (!tetris.blocked(faller, faller.getOrigin().y, faller.getOrigin().x + i)) {
             faller.move(i);
         }
     }
 
+    
+    /**
+     * Rotates the tetromino. Checks that it can be rotated (isn't blocked).
+     * Currently no wallkicks allowed.
+     *
+     * @see Tetris#blocked(domain.Tetromino, int, int)
+     */
     public void rotation() {
         Point[][] rotations = faller.getRotations();
         int rotation = faller.getRotation();
@@ -144,36 +181,66 @@ public class TetrisService {
 
         if (!tetris.blocked(newRotation, faller.getOrigin().y, faller.getOrigin().x)) {
             faller.setTetromino(rotations[rotation]);
-            faller.rotation = rotation;
+            faller.setRotation(rotation);
         }
-
     }
 
-    // origin needs to be reset, otherwise the current system will spawn a new tetromino 
-    // in the last spot of the same shape
+    
+    /**
+     * Spawns a new, randomly chosen tetromino.
+     *
+     */
     public void newTetromino() {
         Random r = new Random();
         int t = r.nextInt(7);
         int rotation = r.nextInt(4);
         Tetromino faller = tetrominos[t];
+        
+        // origin needs to be reset, otherwise the current system will spawn a new tetromino 
+        // in the last spot of the same shape
         faller.setOrigin(4, 0);
+        
         faller.setTetromino(faller.getRotations()[rotation]);
-        faller.rotation = rotation;
+        faller.setRotation(rotation);
         this.faller = faller;
 
     }
+
     
+    /**
+     * Saves score into the database.
+     * @param name Username
+     * @throws SQLException SQLException 
+     */
     public void saveScore(String name) throws SQLException {
         hsDao.create(name, score);
     }
-    
-    public List<String> getHighscores() throws SQLException {
-        return hsDao.findAll();
+
+    /**
+     * Retrieves scores from database and returns a sublist.
+     * @return Top ten high scores or the whole list if its size is less than 10.
+     * @throws SQLException SQLException 
+     */
+    public List<String> getHighScores() throws SQLException {
+        List<String> allScores = hsDao.findAll();
+
+        if (allScores.size() < 10) {
+            return allScores;
+        }
+
+        return allScores.subList(0, 9);
     }
 
-    // TODO game over
-    public void gameOver() {
-        gameOver = true;
+    /**
+     * Resets the game state.
+     * 
+     */ 
+    public void reset() {
+        newTetromino();
+        score = 0;
+        gameOver = false;
+        hsDao = new ScoreDao(databaseUrl);
+        tetris = new Tetris(matrixWidth, matrixHeight, background);
     }
 
     public int getScore() {
@@ -201,7 +268,7 @@ public class TetrisService {
     }
 
     public int getCanvasHeight() {
-        return canvasHeight;
+        return cavasHeight;
     }
 
     public int getScale() {

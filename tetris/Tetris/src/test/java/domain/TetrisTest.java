@@ -97,7 +97,7 @@ public class TetrisTest {
         Tetromino faller = tetrominos[t];
         faller.setOrigin(4, 0);
         faller.setTetromino(faller.getRotations()[rotation]);
-        faller.rotation = rotation;
+        faller.setRotation(rotation);
         tetromino = faller;
 
     }
@@ -127,8 +127,8 @@ public class TetrisTest {
     @Test
     public void tetrominoGetsBlockedByFixedMatrix() {
 
-        for (int i = 0; i < tetris.height; i++) {
-            for (int j = 0; j < tetris.width; j++) {
+        for (int i = 0; i < tetris.getHeight(); i++) {
+            for (int j = 0; j < tetris.getWidth(); j++) {
                 tetris.getMatrix()[i][j] = Color.ALICEBLUE;
             }
         }
@@ -139,8 +139,8 @@ public class TetrisTest {
     // can't test too full a matrix; removal algorithm is slow 
     @Test
     public void removeRowsEmptiesMatrix() {
-        for (int i = tetris.height - 3; i < tetris.height; i++) {
-            for (int j = 0; j < tetris.width; j++) {
+        for (int i = tetris.getHeight() - 3; i < tetris.getHeight(); i++) {
+            for (int j = 0; j < tetris.getWidth(); j++) {
                 tetris.getMatrix()[i][j] = Color.ALICEBLUE;
             }
         }
@@ -148,8 +148,8 @@ public class TetrisTest {
         tetris.checkFullRows();
         boolean empty = true;
 
-        for (int i = 0; i < tetris.height; i++) {
-            for (int j = 0; j < tetris.width; j++) {
+        for (int i = 0; i < tetris.getHeight(); i++) {
+            for (int j = 0; j < tetris.getWidth(); j++) {
                 if (tetris.getMatrix()[i][j] != Color.WHITE) {
                     empty = false;
                 }
@@ -162,15 +162,15 @@ public class TetrisTest {
 
     @Test
     public void removeRowsRemovesCorrectRows() {
-        for (int i = tetris.height - 5; i < tetris.height - 2; i++) {
-            for (int j = 0; j < tetris.width; j++) {
+        for (int i = tetris.getHeight() - 5; i < tetris.getHeight() - 2; i++) {
+            for (int j = 0; j < tetris.getWidth(); j++) {
                 tetris.getMatrix()[i][j] = Color.ALICEBLUE;
             }
         }
 
-        for (int a = 1; a < tetris.width; a++) {
+        for (int a = 1; a < tetris.getWidth(); a++) {
             if (a % 2 == 0) {
-                tetris.getMatrix()[tetris.height - 3][a] = tetris.background;
+                tetris.getMatrix()[tetris.getHeight() - 3][a] = tetris.getBackground();
             }
         }
 
@@ -178,8 +178,8 @@ public class TetrisTest {
 
         boolean empty = true;
 
-        for (int i = 0; i < tetris.width; i++) {
-            if (tetris.getMatrix()[tetris.height - 3][i] != tetris.background) {
+        for (int i = 0; i < tetris.getWidth(); i++) {
+            if (tetris.getMatrix()[tetris.getHeight() - 3][i] != tetris.getBackground()) {
                 empty = false;
             }
         }
@@ -190,8 +190,8 @@ public class TetrisTest {
 
     @Test
     public void checkFullRowsCountsRowsCorrectly() {
-        for (int i = tetris.height - 5; i < tetris.height - 2; i++) {
-            for (int j = 0; j < tetris.width; j++) {
+        for (int i = tetris.getHeight() - 5; i < tetris.getHeight() - 2; i++) {
+            for (int j = 0; j < tetris.getWidth(); j++) {
                 tetris.getMatrix()[i][j] = Color.ALICEBLUE;
             }
         }

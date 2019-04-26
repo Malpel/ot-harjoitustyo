@@ -2,11 +2,17 @@ package ui;
 
 import domain.TetrisService;
 import java.awt.Point;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,14 +20,13 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
@@ -36,29 +41,34 @@ public class TetrisUi extends Application {
 
     @Override
     public void init() {
-        tetris = new TetrisService(Color.rgb(43, 42, 42));
+        tetris = new TetrisService();
         width = tetris.getCanvasWidth();
         height = tetris.getCanvasHeight();
         scale = tetris.getScale();
         tetris.newTetromino();
     }
+    
+    // TODO make this mess look better, both code and what it actually looks like when executed
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
+        
         Canvas canvas = new Canvas(width, height);
-
         GraphicsContext gc = canvas.getGraphicsContext2D();
         BorderPane gameBoard = new BorderPane();
+
         gameBoard.setCenter(canvas);
+
         VBox leftBorder = new VBox();
         Label scoreLabel = new Label();
-        Label scoreLabel2 = new Label();
+        Label scoreLabelFinal = new Label();
         IntegerProperty score = new SimpleIntegerProperty(0);
 
+        // needed to keep up with score updates
         scoreLabel.textProperty().bind(Bindings.createStringBinding(() -> ("Score: " + tetris.getScore()), score));
-        scoreLabel2.textProperty().bind(Bindings.createStringBinding(() -> (String.valueOf(tetris.getScore())), score));
+        scoreLabelFinal.textProperty().bind(Bindings.createStringBinding(() -> (String.valueOf(tetris.getScore())), score));
 
+        // TODO change time to similar to score updating
         leftBorder.getChildren().addAll(new Label("Tetris"), scoreLabel, new Label("Time: 22.22"));
         leftBorder.setAlignment(Pos.CENTER);
         leftBorder.setPadding(new Insets(15, 12, 15, 12));
@@ -67,90 +77,46 @@ public class TetrisUi extends Application {
 
         gameBoard.setLeft(leftBorder);
 
+        // gameplay scene
         Scene gameLoop = new Scene(gameBoard);
-
-        BorderPane scorePane = new BorderPane();
-        scorePane.setPrefSize(width, height);
-
-        Popup popup = new Popup();
-        VBox scoreBox = new VBox();
-        scoreBox.setSpacing(10);
-        
-        Button submitScore = new Button("Submit");
-        submitScore.setOnAction((event) -> {
-            // TODO submit through tetriservice to database
-            
-            primaryStage.setScene(gameLoop);
-        });
-        
-        scoreBox.getChildren().addAll(new Label("nickname: "), new TextField(), scoreLabel2, submitScore);
-        scoreBox.setStyle("-fx-background-color: #FFFFFF");
-        scoreBox.setPadding(new Insets(15, 15, 15, 15));
-        popup.getContent().addAll(scoreBox);
-
         Button startGame = new Button("Start game");
-        startGame.setOnAction((event) -> {
 
-            primaryStage.setScene(gameLoop);
-            new AnimationTimer() {
-
-                long previous = 0;
-
-                @Override
-
-                public void handle(long now) {
-
-                    if (now - previous < 100000000) {
-
-                        return;
-
-                    } else if (tetris.isGameOver()) {
-                        closing = true;
-                        stop();
-                        scoreLabel2.textProperty().bind(Bindings.createStringBinding(() -> ("Your score: " + tetris.getScore()), score));
-
-                        popup.show(primaryStage);
-                    }
-
-                    gc.setFill(Color.WHITE);
-                    gc.fillRect(0, 0, width, height);
-                    drawMatrix(gc);
-                    drawFaller(gc);
-                    scoreLabel.textProperty().bind(Bindings.createStringBinding(() -> ("Score: " + tetris.getScore()), score));
-
-                    this.previous = now;
-
-                }
-
-            }.start();
-
-            new Thread() {
-                @Override
-                public void run() {
-                    while (!tetris.isGameOver() && !closing) {
-
-                        try {
-                            Thread.sleep(1000);
-                            tetris.updateTetris();
-                        } catch (InterruptedException e) {
-                        }
-                    }
-                }
-            }.start();
-        });
+        // highscore screen
+        BorderPane scorePane = new BorderPane();
+        scorePane.setPrefSize(350, 300);
 
         Scene scoreboard = new Scene(scorePane);
 
-        Button highscores = new Button("Highscores");
-        highscores.setOnAction((event) -> {
-            
+        Button highScores = new Button("High Scores");
+        highScores.setOnAction((event) -> {
+            VBox scoreList = new VBox();
+            List<String> list = new ArrayList<>();
+            try {
+                list = tetris.getHighScores();
+            } catch (SQLException ex) {
+                Logger.getLogger(TetrisUi.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            for (String s : list) {
+                scoreList.getChildren().add(new Label(s));
+            }
+            scoreList.setAlignment(Pos.CENTER);
+            scorePane.setCenter(scoreList);
+
             primaryStage.setScene(scoreboard);
+
         });
 
+        // the start screen 
+        BorderPane startPane = new BorderPane();
         VBox startSet = new VBox();
-        startSet.getChildren().addAll(startGame, highscores);
+        startSet.setPadding(new Insets(15, 15, 15, 15));
+        startSet.setSpacing(10);
+        startSet.getChildren().addAll(startGame, highScores);
+        startSet.setAlignment(Pos.CENTER);
+        startPane.setCenter(startSet);
+        startPane.setPrefSize(350, 200);
 
-        Scene start = new Scene(startSet);
+        Scene start = new Scene(startPane);
 
         Button backToStart = new Button("Back");
         backToStart.setOnAction((event) -> {
@@ -159,6 +125,53 @@ public class TetrisUi extends Application {
 
         scorePane.setBottom(backToStart);
 
+        // submit score to database
+        TextField nameField = new TextField();
+        Button submitScore = new Button("Submit");
+        submitScore.setOnAction((event) -> {
+            try {
+                tetris.saveScore(nameField.getText());
+                primaryStage.setScene(start);
+            } catch (SQLException ex) {
+                Logger.getLogger(TetrisUi.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
+        BorderPane submitPane = new BorderPane();
+        VBox submitBox = new VBox();
+        submitBox.setSpacing(10);
+        submitBox.setPadding(new Insets(15, 15, 15, 15));
+        submitBox.getChildren().addAll(new Label("Name: "), nameField, scoreLabelFinal, submitScore);
+        submitBox.setPrefSize(350, 200);
+        submitPane.setCenter(submitBox);
+
+        Scene saveScore = new Scene(submitPane);
+
+        // game over popup; save score or return to start screen
+        Popup popup = new Popup();
+        VBox popupBox = new VBox();
+        popupBox.setSpacing(10);
+        popupBox.setStyle("-fx-background-color: #FFFFFF");
+        popupBox.setPadding(new Insets(15, 15, 15, 15));
+        popupBox.setPrefSize(350, 200);
+        popupBox.setAlignment(Pos.CENTER);
+
+        Button toSubmitScreen = new Button("Yes");
+        toSubmitScreen.setOnAction((even) -> {
+            popup.hide();
+            primaryStage.setScene(saveScore);
+        });
+        Button toStartScreen = new Button("No");
+        toStartScreen.setOnAction((event) -> {
+            popup.hide();
+            primaryStage.setScene(start);
+        });
+
+        
+        popupBox.getChildren().addAll(new Label("Game Over!"), new Label("Save score?"), toSubmitScreen, toStartScreen);
+        popup.getContent().addAll(popupBox);
+
+        // keybindings for controls
         gameLoop.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             if (key.getCode() == KeyCode.DOWN) {
                 tetris.updateTetris();
@@ -183,13 +196,73 @@ public class TetrisUi extends Application {
             }
         });
 
-        primaryStage.setScene(start);
+        // the game loop; separate into its own method?
+        startGame.setOnAction((event) -> {
 
-        primaryStage.setTitle(
-                "Tetris");
+            tetris.reset();
+            closing = false;
+            tetris.setGameOver(false);
+
+            primaryStage.setScene(gameLoop);
+            
+            // this whole thing should be redone
+            new AnimationTimer() {
+
+                long previous = 0;
+
+                @Override
+                
+                public void handle(long now) {
+
+                    // copied directly from an example, could be changed
+                    if (now - previous < 100000000) {
+                        return;
+
+                    } else if (tetris.isGameOver()) {
+                        closing = true;
+                        stop();
+                        // get the final score
+                        scoreLabelFinal.textProperty().bind(Bindings.createStringBinding(() -> ("Your score: " + tetris.getScore()), score));
+                        popup.show(primaryStage);
+                    }
+
+                    gc.setFill(Color.WHITE);
+                    gc.fillRect(0, 0, width, height);
+                    drawMatrix(gc);
+                    drawFaller(gc);
+                    // could be updated less frequently, move somewhere else?
+                    scoreLabel.textProperty().bind(Bindings.createStringBinding(() -> ("Score: " + tetris.getScore()), score));
+
+                    this.previous = now;
+
+                }
+
+            }.start();
+
+            new Thread() {
+                @Override
+                public void run() {
+                    while (!tetris.isGameOver() && !closing) {
+
+                        try {
+                            Thread.sleep(500);
+                            tetris.updateTetris();
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                }
+            }.start();
+        });
+
+        primaryStage.setScene(start);
+        primaryStage.setTitle("Tetris");
         primaryStage.show();
     }
 
+    /**
+     * Draws the falling piece.
+     * @param gc GraphicsContext
+     */
     public void drawFaller(GraphicsContext gc) {
         gc.setFill(tetris.getFaller().getColor());
         for (Point p : tetris.getFaller().getTetromino()) {
@@ -199,6 +272,10 @@ public class TetrisUi extends Application {
 
     }
 
+    /**
+     * Draws the fixed matrix.
+     * @param gc GraphicsContext
+     */
     public void drawMatrix(GraphicsContext gc) {
         for (int y = 0; y < tetris.getMatrixHeight(); y++) {
             for (int x = 0; x < tetris.getMatrixWidth(); x++) {
@@ -208,8 +285,13 @@ public class TetrisUi extends Application {
         }
     }
 
+    /**
+     * Stop changes the boolean value closing to true.
+     * Needed when game is closed before game over to stop the game state updating thread.
+     */
     @Override
     public void stop() {
+        // needed to stop the thread
         closing = true;
 
     }
