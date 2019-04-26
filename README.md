@@ -2,6 +2,8 @@
 
 ## Tetris-klooni
 
+Sovellus on toteutus klassikkopeli Tetriksestä.
+
 ## Dokumentaatio
 
 [Käyttöohje](https://github.com/Malpel/ot-harjoitustyo/blob/master/dokumentaatio/kayttoohje.md)
@@ -17,6 +19,8 @@
 
 [Viikko 5](https://github.com/Malpel/ot-harjoitustyo/releases/tag/viikko5)
 
+[Viikko 6](https://github.com/Malpel/ot-harjoitustyo/releases/tag/viikko6)
+
 
 ## Komentorivi
 
@@ -31,6 +35,22 @@ Testikattavuusraportin luominen
 `mvn jacoco:report`
 
 Raporttia voi tarkastella avaamalla tiedosto *target/site/jacoco/index.html* selaimessa 
+
+## Jarin generointi
+
+Komento
+
+`mvn package`
+
+generoi hakemistoon target suoritettavan jar-tiedoston Tetris-1.0-SNAPSHOT.jar
+
+## JavaDoc
+
+JavaDoc generoidaan komennolla
+
+`mvn javadoc:javadoc`
+
+JavaDocia voi tarkastella avaamalla tiedosto _target/site/apidocs/index.html_ selaimessa
 
 ## Checkstyle
 

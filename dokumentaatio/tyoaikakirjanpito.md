@@ -13,5 +13,6 @@
 | 16.04 | 3h 30min  | jar, sekvenssikaavio, korjailua, pelin päättyminen, kokeiluja
 | 24.04 | 3h 15min  | ui:n ja muiden ominaisuuksien toteuttamista
 | 24.04 | 4h 10min  | dao ja yleinen tietokantasekoilu, tietokantaan tallennus lisätty
-| yht | 35h 35min  | 
+| 26.04 | 6h | alustava ui, pysyväistallennus korjattu, javadoc, dokumentaatio, säätämistä
+| yht | 45h 45min  | 
 

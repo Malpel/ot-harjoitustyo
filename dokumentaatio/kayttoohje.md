@@ -1,11 +1,39 @@
 # Käyttöohje
 
+Laata tiedosto [placeholder](https:github.com/Malpel/ot-harjoitustyo/releases/tag/viikko6)
+
+Ohjelma käynnistetään tuplaklikkaamalla tetris-R2.jaria 
+
+tai komennolla
+
+`java -jar tetris-R2.jar`
+
+## Aloitusruutu
+
+Tetristä pääse pelaaman painamalla _start game_.
+
+_High Scores_ napista taas pääsee pisteiden top 10-näkymään
+
+## Pistenäkymä
+
+Näkymä näyttää kymmenen parasta tulosta. 
+
+Aloitusruutuun pääse painamalla _back_.
+
 ## Pelaaminen
+
+Peli toimii melkein kuin oikea Tetris:
 
 Tetrominoa liikutetaan nuolinäppäimillä (vasen, alas, oikea)
 
-Välilyönnillä tetrominoa voi pyörittää
+Tetrominoa voi pyörittää välilyönnillä. 
 
-## Huom!
+## Pisteiden tallennus
 
-Peliä ei ole ohjelmoitu loppumaan tätä kirjoittaessa 09.04.
+Pelin loputtua voi halutessaan tallentaa pisteensä tietokantaan käyttäjänimellään. Tallennusnäkymään pääse _game over_ -ikkunasta _yes_-napilla.
+
+Aloitusruutuun pääsee takaisin painamalla _no_.
+
+## Muita huomioita
+
+Kaikki paitsi pelinäkymä muuttuvat satunnaisesti täysin mustiksi, mutta ikkunan koon muuttaminen on auttanut tähän.
