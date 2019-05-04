@@ -5,14 +5,13 @@ import java.awt.Point;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -20,15 +19,16 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class TetrisUi extends Application {
 
@@ -37,7 +37,8 @@ public class TetrisUi extends Application {
     int scale;
     int time;
     TetrisService tetris;
-    boolean closing;
+    int speed;
+    ScheduledExecutorService ex;
 
     @Override
     public void init() {
@@ -46,13 +47,14 @@ public class TetrisUi extends Application {
         height = tetris.getCanvasHeight();
         scale = tetris.getScale();
         tetris.newTetromino();
+        speed = 1000;
+        time = 0;
+        ex = Executors.newScheduledThreadPool(2);
     }
-    
-    // TODO make this mess look better, both code and what it actually looks like when executed
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        
+
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         BorderPane gameBoard = new BorderPane();
@@ -60,27 +62,23 @@ public class TetrisUi extends Application {
         gameBoard.setCenter(canvas);
 
         VBox leftBorder = new VBox();
-        Label scoreLabel = new Label();
-        Label scoreLabelFinal = new Label();
-        IntegerProperty score = new SimpleIntegerProperty(0);
+        Text scoreText = new Text();
+        Text scoreTextFinal = new Text();
+        Text timeText = new Text();
+        timeText.setText("Time : " + time);
 
-        // needed to keep up with score updates
-        scoreLabel.textProperty().bind(Bindings.createStringBinding(() -> ("Score: " + tetris.getScore()), score));
-        scoreLabelFinal.textProperty().bind(Bindings.createStringBinding(() -> (String.valueOf(tetris.getScore())), score));
-
-        // TODO change time to similar to score updating
-        leftBorder.getChildren().addAll(new Label("Tetris"), scoreLabel, new Label("Time: 22.22"));
+        leftBorder.getChildren().addAll(new Label("Tetris"), scoreText, timeText);
         leftBorder.setAlignment(Pos.CENTER);
         leftBorder.setPadding(new Insets(15, 12, 15, 12));
         leftBorder.setSpacing(10);
         leftBorder.setStyle("-fx-background-color: #FFFFFF");
 
-        gameBoard.setLeft(leftBorder);
+        gameBoard.setBottom(leftBorder);
 
         // gameplay scene
         Scene gameLoop = new Scene(gameBoard);
         Button startGame = new Button("Start game");
-
+        
         // highscore screen
         BorderPane scorePane = new BorderPane();
         scorePane.setPrefSize(350, 300);
@@ -141,7 +139,7 @@ public class TetrisUi extends Application {
         VBox submitBox = new VBox();
         submitBox.setSpacing(10);
         submitBox.setPadding(new Insets(15, 15, 15, 15));
-        submitBox.getChildren().addAll(new Label("Name: "), nameField, scoreLabelFinal, submitScore);
+        submitBox.getChildren().addAll(new Label("Name: "), nameField, scoreTextFinal, submitScore);
         submitBox.setPrefSize(350, 200);
         submitPane.setCenter(submitBox);
 
@@ -167,8 +165,7 @@ public class TetrisUi extends Application {
             primaryStage.setScene(start);
         });
 
-        
-        popupBox.getChildren().addAll(new Label("Game Over!"), new Label("Save score?"), toSubmitScreen, toStartScreen);
+        popupBox.getChildren().addAll(new Text("Game Over!"), new Text("Save score?"), toSubmitScreen, toStartScreen);
         popup.getContent().addAll(popupBox);
 
         // keybindings for controls
@@ -192,37 +189,44 @@ public class TetrisUi extends Application {
 
         gameLoop.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             if (key.getCode() == KeyCode.SPACE) {
-                tetris.rotation();
+                tetris.rotate();
             }
         });
+
+        Runnable timerUpdate = () -> {
+            time++;
+            timeText.setText("Time: " + String.valueOf(time));
+            scoreText.setText("Score: " + tetris.getScore());
+        };
+
+        Runnable tetrisUpdate = () -> {
+            tetris.updateTetris();
+        };
 
         // the game loop; separate into its own method?
         startGame.setOnAction((event) -> {
 
             tetris.reset();
-            closing = false;
-            tetris.setGameOver(false);
-
-            primaryStage.setScene(gameLoop);
             
-            // this whole thing should be redone
+            ex.scheduleWithFixedDelay(timerUpdate, 1, 1, TimeUnit.SECONDS);
+            ex.scheduleWithFixedDelay(tetrisUpdate, 1000, speed, TimeUnit.MILLISECONDS);
+           
+            primaryStage.setScene(gameLoop);
+
             new AnimationTimer() {
 
                 long previous = 0;
 
                 @Override
-                
+
                 public void handle(long now) {
 
-                    // copied directly from an example, could be changed
-                    if (now - previous < 100000000) {
-                        return;
-
-                    } else if (tetris.isGameOver()) {
-                        closing = true;
+                    
+                    if (tetris.isGameOver()) {
+                        ex.shutdown();
                         stop();
                         // get the final score
-                        scoreLabelFinal.textProperty().bind(Bindings.createStringBinding(() -> ("Your score: " + tetris.getScore()), score));
+                        scoreTextFinal.setText("Your score: " + tetris.getScore());
                         popup.show(primaryStage);
                     }
 
@@ -230,8 +234,7 @@ public class TetrisUi extends Application {
                     gc.fillRect(0, 0, width, height);
                     drawMatrix(gc);
                     drawFaller(gc);
-                    // could be updated less frequently, move somewhere else?
-                    scoreLabel.textProperty().bind(Bindings.createStringBinding(() -> ("Score: " + tetris.getScore()), score));
+                    
 
                     this.previous = now;
 
@@ -239,19 +242,6 @@ public class TetrisUi extends Application {
 
             }.start();
 
-            new Thread() {
-                @Override
-                public void run() {
-                    while (!tetris.isGameOver() && !closing) {
-
-                        try {
-                            Thread.sleep(500);
-                            tetris.updateTetris();
-                        } catch (InterruptedException e) {
-                        }
-                    }
-                }
-            }.start();
         });
 
         primaryStage.setScene(start);
@@ -261,6 +251,7 @@ public class TetrisUi extends Application {
 
     /**
      * Draws the falling piece.
+     *
      * @param gc GraphicsContext
      */
     public void drawFaller(GraphicsContext gc) {
@@ -269,11 +260,11 @@ public class TetrisUi extends Application {
             gc.fillRect(((p.x + tetris.getFaller().getOrigin().x) * scale), ((p.y + tetris.getFaller().getOrigin().y) * scale), scale, scale);
 
         }
-
     }
 
     /**
      * Draws the fixed matrix.
+     *
      * @param gc GraphicsContext
      */
     public void drawMatrix(GraphicsContext gc) {
@@ -286,14 +277,13 @@ public class TetrisUi extends Application {
     }
 
     /**
-     * Stop changes the boolean value closing to true.
-     * Needed when game is closed before game over to stop the game state updating thread.
+     * Stop changes the boolean value closing to true. Needed when game is
+     * closed before game over to stop the game state updating thread.
      */
     @Override
     public void stop() {
-        // needed to stop the thread
-        closing = true;
-
+        // needed to stop the threads
+        ex.shutdown();
     }
 
     public static void main(String[] args) {

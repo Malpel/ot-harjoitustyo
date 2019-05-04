@@ -12,6 +12,8 @@ Sovellus on toteutus klassikkopeli Tetriksestä.
 
 [Arkkitehtuurikuvaus](https://github.com/Malpel/ot-harjoitustyo/blob/master/dokumentaatio/arkkitehtuuri.md)
 
+[Testausdokumetti](https://github.com/Malpel/ot-harjoitustyo/blob/master/dokumentaatio/testaus.md)
+
 [Työaikakirjanpito](https://github.com/Malpel/ot-harjoitustyo/blob/master/dokumentaatio/tyoaikakirjanpito.md)
 
 
@@ -21,6 +23,7 @@ Sovellus on toteutus klassikkopeli Tetriksestä.
 
 [Viikko 6](https://github.com/Malpel/ot-harjoitustyo/releases/tag/viikko6)
 
+[Loppupalautus](https://github.com/Malpel/ot-harjoitustyo/releases/tag/)
 
 ## Komentorivi
 

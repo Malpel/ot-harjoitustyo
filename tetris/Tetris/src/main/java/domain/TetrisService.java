@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * The main backend workhorse for the program. Handles the coordination between the TetrisUi and
- * Tetris, Tetromino, and ScoreDao classes.
+ * The main backend workhorse for the program. Handles the coordination between
+ * the TetrisUi and Tetris, Tetromino, and ScoreDao classes.
  *
  * @see Tetris
  * @see Tetromino
@@ -22,14 +22,17 @@ public class TetrisService {
     private Tetromino faller;
     private final int matrixWidth = 10;
     private final int matrixHeight = 22;
-    private final int canvasWidth = 350; // 35 * matrixWidth
-    private final int cavasHeight = 600; // 35 * matrixHeight
+    private final int canvasWidth = 350;
+    private final int cavasHeight = 600;
     private final int scale = cavasHeight / matrixHeight; // scale is used to determine correct sizes for drawing
     private int score;
     private boolean gameOver;
     private ScoreDao hsDao;
     private final String databaseUrl = "jdbc:sqlite:tetris.db";
     private final Color background = Color.rgb(43, 42, 42);
+    private int level;
+    private int difficulty;
+    private int lineClears;
 
     public TetrisService() {
 
@@ -96,7 +99,6 @@ public class TetrisService {
 
     }
 
-    
     // 
     /**
      * Updates the game state. Either makes the tetromino fall or fixes it to
@@ -122,30 +124,58 @@ public class TetrisService {
         }
     }
 
-    
     /**
-     * Updates the score.
+     * Updates the score, calls method for level increase. Original
+     * Nintendo-like scoring..
      *
      * @param i The amount of full rows.
      */
     public void updateScore(int i) {
         switch (i) {
             case 1:
-                score += 40;
+                score += 40 * (level + 1);
                 break;
             case 2:
-                score += 100;
+                score += 100 * (level + 1);
+                ;
                 break;
             case 3:
-                score += 300;
+                score += 300 * (level + 1);
                 break;
             case 4:
-                score += 1200;
+                score += 1200 * (level + 1);
                 break;
+        }
+        lineClears += i;
+        increaseLevel();
+    }
+
+    /**
+     * Increases the level and difficulty values. Mimics Nintendo-style difficulty.
+     */
+    public void increaseLevel() {
+        if (lineClears % 10 == 0 && lineClears != 0) {
+            level++;
+            if (difficulty < 10) {
+                difficulty -= 80;
+            } else if (difficulty > 10 && difficulty < 13) {
+                difficulty = 80;
+            }
+            else if (difficulty >= 13 && difficulty < 16) {
+                difficulty = 70;
+            }
+            else if (difficulty >= 16 && difficulty < 18) {
+                difficulty = 50;
+            }
+            else if (difficulty >= 18 && difficulty < 29) {
+                difficulty = 30;
+            }
+            else if (difficulty >= 29) {
+                difficulty = 20;
+            }
         }
     }
 
-    
     /**
      * Checks that the move is legitimate.
      *
@@ -159,58 +189,56 @@ public class TetrisService {
         }
     }
 
-    
     /**
      * Rotates the tetromino. Checks that it can be rotated (isn't blocked).
      * Currently no wallkicks allowed.
      *
      * @see Tetris#blocked(domain.Tetromino, int, int)
      */
-    public void rotation() {
-        Point[][] rotations = faller.getRotations();
-        int rotation = faller.getRotation();
+    public void rotate() {
+        Point[][] orientations = faller.getOrientations();
+        int orientation = faller.getOrientation();
 
-        if (rotation + 1 > 3) {
-            rotation = 0;
+        if (orientation + 1 > 3) {
+            orientation = 0;
         } else {
-            rotation += 1;
+            orientation += 1;
         }
 
-        Tetromino newRotation = new Tetromino(faller.getRotations(), faller.getColor());
-        newRotation.setTetromino(rotations[rotation]);
+        Tetromino newRotation = new Tetromino(faller.getOrientations(), faller.getColor());
+        newRotation.setTetromino(orientations[orientation]);
 
         if (!tetris.blocked(newRotation, faller.getOrigin().y, faller.getOrigin().x)) {
-            faller.setTetromino(rotations[rotation]);
-            faller.setRotation(rotation);
+            faller.setTetromino(orientations[orientation]);
+            faller.setOrientation(orientation);
         }
     }
 
-    
     /**
-     * Spawns a new, randomly chosen tetromino.
+     * Spawns a new, pseudo-randomly chosen tetromino.
      *
      */
     public void newTetromino() {
         Random r = new Random();
         int t = r.nextInt(7);
-        int rotation = r.nextInt(4);
+        int orientation = r.nextInt(4);
         Tetromino faller = tetrominos[t];
-        
+
         // origin needs to be reset, otherwise the current system will spawn a new tetromino 
         // in the last spot of the same shape
         faller.setOrigin(4, 0);
-        
-        faller.setTetromino(faller.getRotations()[rotation]);
-        faller.setRotation(rotation);
+
+        faller.setTetromino(faller.getOrientations()[orientation]);
+        faller.setOrientation(orientation);
         this.faller = faller;
 
     }
 
-    
     /**
      * Saves score into the database.
+     *
      * @param name Username
-     * @throws SQLException SQLException 
+     * @throws SQLException SQLException
      */
     public void saveScore(String name) throws SQLException {
         hsDao.create(name, score);
@@ -218,8 +246,10 @@ public class TetrisService {
 
     /**
      * Retrieves scores from database and returns a sublist.
-     * @return Top ten high scores or the whole list if its size is less than 10.
-     * @throws SQLException SQLException 
+     *
+     * @return Top ten high scores or the whole list if its size is less than
+     * 10.
+     * @throws SQLException SQLException
      */
     public List<String> getHighScores() throws SQLException {
         List<String> allScores = hsDao.findAll();
@@ -233,14 +263,17 @@ public class TetrisService {
 
     /**
      * Resets the game state.
-     * 
-     */ 
+     *
+     */
     public void reset() {
         newTetromino();
         score = 0;
         gameOver = false;
         hsDao = new ScoreDao(databaseUrl);
         tetris = new Tetris(matrixWidth, matrixHeight, background);
+        level = 0;
+        lineClears = 0;
+        difficulty = 720;
     }
 
     public int getScore() {
@@ -285,14 +318,6 @@ public class TetrisService {
 
     public void setFaller(Tetromino faller) {
         this.faller = faller;
-    }
-
-    public Tetromino[] getTetrominos() {
-        return tetrominos;
-    }
-
-    public void setTetrominos(Tetromino[] tetrominos) {
-        this.tetrominos = tetrominos;
     }
 
     public boolean isGameOver() {

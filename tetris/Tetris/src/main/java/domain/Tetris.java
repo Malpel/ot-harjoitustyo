@@ -34,24 +34,13 @@ public class Tetris {
         return width;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
 
     public int getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
     public Color getBackground() {
         return background;
-    }
-
-    public void setBackground(Color background) {
-        this.background = background;
     }
 
     public Color[][] getMatrix() {

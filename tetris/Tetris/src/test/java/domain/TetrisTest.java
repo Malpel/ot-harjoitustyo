@@ -93,11 +93,11 @@ public class TetrisTest {
 
         Random r = new Random();
         int t = r.nextInt(7);
-        int rotation = r.nextInt(4);
+        int orientation = r.nextInt(4);
         Tetromino faller = tetrominos[t];
         faller.setOrigin(4, 0);
-        faller.setTetromino(faller.getRotations()[rotation]);
-        faller.setRotation(rotation);
+        faller.setTetromino(faller.getOrientations()[orientation]);
+        faller.setOrientation(orientation);
         tetromino = faller;
 
     }

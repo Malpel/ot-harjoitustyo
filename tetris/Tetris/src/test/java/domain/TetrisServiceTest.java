@@ -1,7 +1,6 @@
 package domain;
 
 import java.awt.Point;
-import javafx.scene.paint.Color;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -53,15 +52,15 @@ public class TetrisServiceTest {
     @Test
     public void rotationUpdatesTetrominoPoints() {
         Point[] beforeRotation = ts.getFaller().getTetromino();
-        ts.rotation();
-        assertThat(ts.getFaller().getRotation(), is(not(beforeRotation)));
+        ts.rotate();
+        assertThat(ts.getFaller().getOrientation(), is(not(beforeRotation)));
     }
 
     @Test
     public void rotationUpdatesTetrominoRotation() {
-        int beforeRotation = ts.getFaller().getRotation();
-        ts.rotation();
-        assertThat(ts.getFaller().getRotation(), is(not(beforeRotation)));
+        int beforeRotation = ts.getFaller().getOrientation();
+        ts.rotate();
+        assertThat(ts.getFaller().getOrientation(), is(not(beforeRotation)));
     }
 
     @Test

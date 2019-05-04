@@ -6,30 +6,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Tetromino class takes care of the coordinates and the current rotation/shape of the falling piece.
+ * Tetromino class takes care of the coordinates and the current orientation/shape of the falling piece.
  * 
  */
 public class Tetromino {
 
-    private Point[][] rotations;
+    private Point[][] orientations;
     private Point[] tetromino;
     private Point origin;
     private Color color;
-    private int rotation;
+    private int orientation;
 
     public Tetromino(Point[][] t, Color color) {
         origin = new Point(4, 0);
-        rotations = t;
+        orientations = t;
         tetromino = new Point[4];
         this.color = color;
     }
 
-    public Point[][] getRotations() {
-        return rotations;
+    public Point[][] getOrientations() {
+        return orientations;
     }
 
-    public void setRotations(Point[][] tetromino) {
-        this.rotations = tetromino;
+    public void setOrientations(Point[][] tetromino) {
+        this.orientations = tetromino;
     }
 
     public Point[] getTetromino() {
@@ -62,12 +62,12 @@ public class Tetromino {
         this.color = color;
     }
 
-    public int getRotation() {
-        return rotation;
+    public int getOrientation() {
+        return orientation;
     }
 
-    public void setRotation(int rotation) {
-        this.rotation = rotation;
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
     }
 
     /**
