@@ -147,33 +147,32 @@ public class TetrisService {
                 break;
         }
         lineClears += i;
-        increaseLevel();
+        if (i != 0 && lineClears % 10 == 0 && lineClears > 0) {
+            increaseLevel();
+        }
     }
 
     /**
-     * Increases the level and difficulty values. Mimics Nintendo-style difficulty.
+     * Increases the level and difficulty values. Mimics Nintendo-style
+     * difficulty.
      */
     public void increaseLevel() {
-        if (lineClears % 10 == 0 && lineClears != 0) {
-            level++;
-            if (difficulty < 10) {
-                difficulty -= 80;
-            } else if (difficulty > 10 && difficulty < 13) {
-                difficulty = 80;
-            }
-            else if (difficulty >= 13 && difficulty < 16) {
-                difficulty = 70;
-            }
-            else if (difficulty >= 16 && difficulty < 18) {
-                difficulty = 50;
-            }
-            else if (difficulty >= 18 && difficulty < 29) {
-                difficulty = 30;
-            }
-            else if (difficulty >= 29) {
-                difficulty = 20;
-            }
+
+        level++;
+        if (level < 10) {
+            difficulty -= 80;
+        } else if (level > 10 && level < 13) {
+            difficulty = 80;
+        } else if (level >= 13 && level < 16) {
+            difficulty = 70;
+        } else if (level >= 16 && level < 18) {
+            difficulty = 50;
+        } else if (level >= 18 && level < 29) {
+            difficulty = 30;
+        } else if (level >= 29) {
+            difficulty = 20;
         }
+
     }
 
     /**
@@ -324,8 +323,11 @@ public class TetrisService {
         return gameOver;
     }
 
-    public void setGameOver(boolean gameOver) {
-        this.gameOver = gameOver;
+    public int getDifficulty() {
+        return difficulty;
     }
 
+    public int getLevel() {
+        return level;
+    }
 }

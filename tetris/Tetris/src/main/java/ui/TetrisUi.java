@@ -23,6 +23,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -39,6 +40,7 @@ public class TetrisUi extends Application {
     TetrisService tetris;
     int speed;
     ScheduledExecutorService ex;
+    boolean closing;
 
     @Override
     public void init() {
@@ -49,7 +51,8 @@ public class TetrisUi extends Application {
         tetris.newTetromino();
         speed = 1000;
         time = 0;
-        ex = Executors.newScheduledThreadPool(2);
+        ex = Executors.newScheduledThreadPool(1);
+        closing = false;
     }
 
     @Override
@@ -62,23 +65,29 @@ public class TetrisUi extends Application {
         gameBoard.setCenter(canvas);
 
         VBox leftBorder = new VBox();
+        HBox test = new HBox();
+
         Text scoreText = new Text();
         Text scoreTextFinal = new Text();
+
         Text timeText = new Text();
         timeText.setText("Time : " + time);
 
-        leftBorder.getChildren().addAll(new Label("Tetris"), scoreText, timeText);
+        Text levelText = new Text();
+        levelText.setText("Level: " + tetris.getLevel());
+
+        leftBorder.getChildren().addAll(levelText, scoreText, timeText);
         leftBorder.setAlignment(Pos.CENTER);
-        leftBorder.setPadding(new Insets(15, 12, 15, 12));
+        leftBorder.setPadding(new Insets(15, 15, 15, 15));
         leftBorder.setSpacing(10);
         leftBorder.setStyle("-fx-background-color: #FFFFFF");
-
-        gameBoard.setBottom(leftBorder);
+        
+        gameBoard.setLeft(leftBorder);
 
         // gameplay scene
         Scene gameLoop = new Scene(gameBoard);
         Button startGame = new Button("Start game");
-        
+
         // highscore screen
         BorderPane scorePane = new BorderPane();
         scorePane.setPrefSize(350, 300);
@@ -193,12 +202,7 @@ public class TetrisUi extends Application {
             }
         });
 
-        Runnable timerUpdate = () -> {
-            time++;
-            timeText.setText("Time: " + String.valueOf(time));
-            scoreText.setText("Score: " + tetris.getScore());
-        };
-
+        // threads for updating time and making the tetromio fall
         Runnable tetrisUpdate = () -> {
             tetris.updateTetris();
         };
@@ -207,10 +211,17 @@ public class TetrisUi extends Application {
         startGame.setOnAction((event) -> {
 
             tetris.reset();
-            
+
+            ex = Executors.newScheduledThreadPool(1);
+            Runnable timerUpdate = () -> {
+                time++;
+                timeText.setText("Time: " + String.valueOf(time));
+
+            };
+
             ex.scheduleWithFixedDelay(timerUpdate, 1, 1, TimeUnit.SECONDS);
-            ex.scheduleWithFixedDelay(tetrisUpdate, 1000, speed, TimeUnit.MILLISECONDS);
-           
+            //ex.scheduleWithFixedDelay(tetrisUpdate, 1000, tetris.getDifficulty(), TimeUnit.MILLISECONDS);
+
             primaryStage.setScene(gameLoop);
 
             new AnimationTimer() {
@@ -221,7 +232,6 @@ public class TetrisUi extends Application {
 
                 public void handle(long now) {
 
-                    
                     if (tetris.isGameOver()) {
                         ex.shutdown();
                         stop();
@@ -234,12 +244,25 @@ public class TetrisUi extends Application {
                     gc.fillRect(0, 0, width, height);
                     drawMatrix(gc);
                     drawFaller(gc);
-                    
-
+                    scoreText.setText("Score: " + tetris.getScore());
+                    levelText.setText("Level: " + tetris.getLevel());
                     this.previous = now;
 
                 }
 
+            }.start();
+
+            new Thread() {
+                @Override
+                public void run() {
+                    while (!tetris.isGameOver() && !closing) {
+                        try {
+                            Thread.sleep(tetris.getDifficulty());
+                            tetris.updateTetris();
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                }
             }.start();
 
         });
@@ -284,6 +307,7 @@ public class TetrisUi extends Application {
     public void stop() {
         // needed to stop the threads
         ex.shutdown();
+        closing = true;
     }
 
     public static void main(String[] args) {
