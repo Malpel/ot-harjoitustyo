@@ -12,7 +12,7 @@ tai komennolla
 
 Tetristä pääse pelaaman painamalla _start game_.
 
-_High Scores_ napista taas pääsee pisteiden top 10-näkymään
+_High Scores_ napista taas pääsee pisteiden top 10-näkymään.
 
 ## Pistenäkymä
 
@@ -24,7 +24,7 @@ Aloitusruutuun pääse painamalla _back_.
 
 Peli toimii melkein kuin oikea Tetris:
 
-Tetrominoa liikutetaan nuolinäppäimillä (vasen, alas, oikea)
+Tetrominoa liikutetaan nuolinäppäimillä (vasen, alas, oikea).
 
 Tetrominoa voi pyörittää välilyönnillä. 
 

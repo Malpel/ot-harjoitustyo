@@ -65,7 +65,6 @@ public class TetrisUi extends Application {
         gameBoard.setCenter(canvas);
 
         VBox leftBorder = new VBox();
-        HBox test = new HBox();
 
         Text scoreText = new Text();
         Text scoreTextFinal = new Text();
@@ -78,11 +77,12 @@ public class TetrisUi extends Application {
 
         leftBorder.getChildren().addAll(levelText, scoreText, timeText);
         leftBorder.setAlignment(Pos.CENTER);
-        leftBorder.setPadding(new Insets(15, 15, 15, 15));
-        leftBorder.setSpacing(10);
+        leftBorder.setPadding(new Insets(0, 15, 0, 15));
+        leftBorder.setSpacing(5);
         leftBorder.setStyle("-fx-background-color: #FFFFFF");
-        
+        leftBorder.setPrefWidth(width - 100);
         gameBoard.setLeft(leftBorder);
+        
 
         // gameplay scene
         Scene gameLoop = new Scene(gameBoard);
@@ -106,9 +106,15 @@ public class TetrisUi extends Application {
             for (String s : list) {
                 scoreList.getChildren().add(new Label(s));
             }
+            
+            VBox title = new VBox();
+            title.getChildren().add(new Text("High Scores Top 10"));
+            title.setAlignment(Pos.CENTER);
+            title.setPadding(new Insets(35, 15, 25, 15));
+            scorePane.setTop(title);
             scoreList.setAlignment(Pos.CENTER);
             scorePane.setCenter(scoreList);
-
+            
             primaryStage.setScene(scoreboard);
 
         });
@@ -129,8 +135,12 @@ public class TetrisUi extends Application {
         backToStart.setOnAction((event) -> {
             primaryStage.setScene(start);
         });
-
-        scorePane.setBottom(backToStart);
+        HBox buttonBox = new HBox();
+        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.setPadding(new Insets(35, 15, 25, 15));
+        buttonBox.getChildren().add(backToStart);
+        
+        scorePane.setBottom(buttonBox);
 
         // submit score to database
         TextField nameField = new TextField();
@@ -202,16 +212,14 @@ public class TetrisUi extends Application {
             }
         });
 
-        // threads for updating time and making the tetromio fall
-        Runnable tetrisUpdate = () -> {
-            tetris.updateTetris();
-        };
-
         // the game loop; separate into its own method?
         startGame.setOnAction((event) -> {
-
+            
             tetris.reset();
-
+            // needed, because a new game shows the old time for a second
+            time = 0;
+            timeText.setText("Time: " + String.valueOf(time));
+            
             ex = Executors.newScheduledThreadPool(1);
             Runnable timerUpdate = () -> {
                 time++;
@@ -220,7 +228,7 @@ public class TetrisUi extends Application {
             };
 
             ex.scheduleWithFixedDelay(timerUpdate, 1, 1, TimeUnit.SECONDS);
-            //ex.scheduleWithFixedDelay(tetrisUpdate, 1000, tetris.getDifficulty(), TimeUnit.MILLISECONDS);
+            
 
             primaryStage.setScene(gameLoop);
 
@@ -233,6 +241,7 @@ public class TetrisUi extends Application {
                 public void handle(long now) {
 
                     if (tetris.isGameOver()) {
+                        
                         ex.shutdown();
                         stop();
                         // get the final score

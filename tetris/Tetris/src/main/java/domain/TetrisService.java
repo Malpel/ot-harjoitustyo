@@ -22,8 +22,8 @@ public class TetrisService {
     private Tetromino faller;
     private final int matrixWidth = 10;
     private final int matrixHeight = 22;
-    private final int canvasWidth = 350;
-    private final int cavasHeight = 600;
+    private final int canvasWidth = 270; //350
+    private final int cavasHeight = 594;
     private final int scale = cavasHeight / matrixHeight; // scale is used to determine correct sizes for drawing
     private int score;
     private boolean gameOver;
@@ -125,10 +125,11 @@ public class TetrisService {
     }
 
     /**
-     * Updates the score, calls method for level increase. Original
+     * Updates the score, calls method for level increase if needed. Original
      * Nintendo-like scoring..
      *
      * @param i The amount of full rows.
+     * @see #increaseLevel() 
      */
     public void updateScore(int i) {
         switch (i) {
@@ -153,8 +154,8 @@ public class TetrisService {
     }
 
     /**
-     * Increases the level and difficulty values. Mimics Nintendo-style
-     * difficulty.
+     * Increases the level and difficulty values.
+     * 
      */
     public void increaseLevel() {
 
@@ -204,7 +205,7 @@ public class TetrisService {
             orientation += 1;
         }
 
-        Tetromino newRotation = new Tetromino(faller.getOrientations(), faller.getColor());
+        Tetromino newRotation = new Tetromino(orientations, faller.getColor());
         newRotation.setTetromino(orientations[orientation]);
 
         if (!tetris.blocked(newRotation, faller.getOrigin().y, faller.getOrigin().x)) {
@@ -272,7 +273,7 @@ public class TetrisService {
         tetris = new Tetris(matrixWidth, matrixHeight, background);
         level = 0;
         lineClears = 0;
-        difficulty = 720;
+        difficulty = 800;
     }
 
     public int getScore() {
