@@ -6,7 +6,7 @@ Sovellus on totetutus klassikkopeli Tetriksestä.
 
 ## Perusversion toiminnallisuus
 
-- tetriksen peruspelilooppi
+- Tetriksen peruspelilooppi
     - putoava, liikuteltava tetromino
     - tietty määrä täysiä rivejä nostaa vaikeustasoa (palat tippuvat nopeammin)
     - useampi täysi rivi kerralla tuottaa enemmän pisteitä 
@@ -20,6 +20,8 @@ Sovellus on totetutus klassikkopeli Tetriksestä.
 - pelaaja näkee mikä seuraava pala on
 - pelin pysäytys
 - tetrominoa voi pyörittää molempiin suuntiin
+- parempi vaikeuskäyrä
+- tetrominojen ulkonäkö (neljästä palasta muodustuva palikka)
 - parempi käyttöliittymä
 - aloitustason voi valita itse
 - ääniefektit

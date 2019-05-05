@@ -57,7 +57,7 @@ public class TetrisServiceTest {
     }
 
     @Test
-    public void rotationUpdatesTetrominoRotation() {
+    public void rotationUpdatesTetrominoOrientation() {
         int beforeRotation = ts.getFaller().getOrientation();
         ts.rotate();
         assertThat(ts.getFaller().getOrientation(), is(not(beforeRotation)));
@@ -84,6 +84,42 @@ public class TetrisServiceTest {
         ts.updateScore(2);
         ts.updateScore(3);
         assertEquals(1720, ts.getScore());
-    }    
+    }
+
+    @Test
+    public void increaseLevelUpdatesSubstitutionCorrectly() {
+        ts.updateScore(1);
+        ts.updateScore(4);
+        ts.updateScore(2);
+        ts.updateScore(3);
+        ts.increaseLevel(1);
+        assertEquals(640, ts.getDifficulty());
+
+    }
+
+    @Test
+    public void increaseLevelUpdatesSettingCorrectly() {
+        ts.updateScore(1);
+        ts.updateScore(4);
+        ts.updateScore(2);
+        ts.updateScore(3);
+        for (int i = 0; i < 29; i++) {
+            ts.increaseLevel(1);
+        }
+        System.out.println(ts.getLevel());
+
+        assertEquals(20, ts.getDifficulty());
+    }
+
+    @Test
+    public void updateTetrisEndsGameWhenNeeded() {
+        ts.updateTetris();
+        for (int h = 0; h < 22; h++) {
+            for (int i = 0; i < ts.getMatrixHeight(); i++) {
+                ts.updateTetris();
+            }
+        }
+        assertTrue(ts.isGameOver());
+    }
 
 }

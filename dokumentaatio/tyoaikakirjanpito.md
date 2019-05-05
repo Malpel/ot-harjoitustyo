@@ -14,6 +14,7 @@
 | 24.04 | 3h 15min  | ui:n ja muiden ominaisuuksien toteuttamista
 | 24.04 | 4h 10min  | dao ja yleinen tietokantasekoilu, tietokantaan tallennus lisätty
 | 26.04 | 6h | alustava ui, pysyväistallennus korjattu, javadoc, dokumentaatio, säätämistä
-| 04.05 | 4h 30min | vaikeustason nosto. refaktorointia, muuta hienosäätöä   
-| yht | 50h 15min  | 
+| 04.05 | 4h 30min | vaikeustason nosto. refaktorointia, muuta hienosäätöä
+| 05.05 | 6h 15min | viimeistelyä loppupalautusta varten    
+| yht | 56h 30min  | 
 

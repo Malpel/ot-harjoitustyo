@@ -46,10 +46,10 @@ public class TetrisService {
         };
 
         Point[][] tetrominoT = {
-            {new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(2, 1)},
-            {new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(1, 2)},
             {new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(1, 2)},
-            {new Point(1, 0), new Point(1, 1), new Point(2, 1), new Point(1, 2)}
+            {new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(1, 2)},
+            {new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(2, 1)},
+            {new Point(1, 0), new Point(1, 1), new Point(2, 1), new Point(1, 2)},
         };
 
         Point[][] tetrominoL = {
@@ -129,7 +129,7 @@ public class TetrisService {
      * Nintendo-like scoring..
      *
      * @param i The amount of full rows.
-     * @see #increaseLevel() 
+     * @see #increaseLevel(int)
      */
     public void updateScore(int i) {
         switch (i) {
@@ -148,32 +148,33 @@ public class TetrisService {
                 break;
         }
         lineClears += i;
-        if (i != 0 && lineClears % 10 == 0 && lineClears > 0) {
-            increaseLevel();
-        }
+
+        increaseLevel(i);
+
     }
 
     /**
      * Increases the level and difficulty values.
-     * 
+     *
+     * @param i the amount of cleared lines
      */
-    public void increaseLevel() {
-
-        level++;
-        if (level < 10) {
-            difficulty -= 80;
-        } else if (level > 10 && level < 13) {
-            difficulty = 80;
-        } else if (level >= 13 && level < 16) {
-            difficulty = 70;
-        } else if (level >= 16 && level < 18) {
-            difficulty = 50;
-        } else if (level >= 18 && level < 29) {
-            difficulty = 30;
-        } else if (level >= 29) {
-            difficulty = 20;
+    public void increaseLevel(int i) {
+        if (i != 0 && lineClears % 10 == 0 && lineClears > 0) {
+            level++;
+            if (level < 10) {
+                difficulty -= 80;
+            } else if (level > 10 && level < 13) {
+                difficulty = 80;
+            } else if (level >= 13 && level < 16) {
+                difficulty = 70;
+            } else if (level >= 16 && level < 18) {
+                difficulty = 50;
+            } else if (level >= 18 && level < 29) {
+                difficulty = 30;
+            } else if (level >= 29) {
+                difficulty = 20;
+            }
         }
-
     }
 
     /**

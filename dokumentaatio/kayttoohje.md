@@ -1,16 +1,16 @@
 # Käyttöohje
 
-Laata tiedosto [tetris_R2.jar](https://github.com/Malpel/ot-harjoitustyo/releases/tag/viikko6)
+Laata tiedosto [tetris_RF.jar](https://github.com/Malpel/ot-harjoitustyo/releases/tag/loppupalautus)
 
-Ohjelma käynnistetään tuplaklikkaamalla tetris_R2.jaria 
+Ohjelma käynnistetään tuplaklikkaamalla tetris_RF.jaria 
 
 tai komennolla
 
-`java -jar tetris_R2.jar`
+`java -jar tetris_RF.jar`
 
 ## Aloitusruutu
 
-Tetristä pääse pelaaman painamalla _start game_.
+Tetristä pääse pelaaman painamalla _Start game_.
 
 _High Scores_ napista taas pääsee pisteiden top 10-näkymään.
 
@@ -18,7 +18,7 @@ _High Scores_ napista taas pääsee pisteiden top 10-näkymään.
 
 Näkymä näyttää kymmenen parasta tulosta. 
 
-Aloitusruutuun pääse painamalla _back_.
+Aloitusruutuun pääse painamalla _Back_.
 
 ## Pelaaminen
 
@@ -26,13 +26,15 @@ Peli toimii melkein kuin oikea Tetris:
 
 Tetrominoa liikutetaan nuolinäppäimillä (vasen, alas, oikea).
 
-Tetrominoa voi pyörittää välilyönnillä. 
+Tetrominoa voi pyörittää välilyönnillä.
+
+Kymmenen täyttä riviä nostaa vaikeustasoa.
 
 ## Pisteiden tallennus
 
-Pelin loputtua voi halutessaan tallentaa pisteensä tietokantaan käyttäjänimellään. Tallennusnäkymään pääse _game over_ -ikkunasta _yes_-napilla.
+Pelin loputtua voi halutessaan tallentaa pisteensä tietokantaan käyttäjänimellään. Tallennusnäkymään pääse _Game Over_ -ikkunasta _Yes_-napilla.
 
-Aloitusruutuun pääsee takaisin painamalla _no_.
+Aloitusruutuun pääsee takaisin painamalla _No_.
 
 ## Muita huomioita
 

@@ -62,3 +62,8 @@ Tetrominon pyörittäminen noudattaa osittain samankaltaista tapahtumasarjaa.
 
 Kun käyttäjä painaa välilyöntiä, tapahtumakäsittelijä kutsuu metodia `rotate()`. Sen sisällä haetaan putoavalta tetrominolta tarvittavat tiedot, jonka jälkeen kutsutaan metodia `blocked(tetromino, y, x)`. Näin varmistetaan, että tetromino ei pyörähtäessään törmää pelilaudan laitoihin tai pudonneisiin paloihin. Jos törmäys tapahtuisi, ei tehdä mitään, muutoin tetromino pyöräytetään.
 
+
+### Muu toiminnallisuus
+
+Lähes kaikki toiminnallisuus toimi samaan tapaan: tapahtumakäsittelijä kutsuu sovelluslogiikan metodeja, jotka tekevät tehtävänsä. Lopuksi käyttöliittymä päivittää näkymän.
+

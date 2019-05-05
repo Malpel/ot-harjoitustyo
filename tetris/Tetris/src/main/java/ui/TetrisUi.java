@@ -82,7 +82,6 @@ public class TetrisUi extends Application {
         leftBorder.setStyle("-fx-background-color: #FFFFFF");
         leftBorder.setPrefWidth(width - 100);
         gameBoard.setLeft(leftBorder);
-        
 
         // gameplay scene
         Scene gameLoop = new Scene(gameBoard);
@@ -106,15 +105,15 @@ public class TetrisUi extends Application {
             for (String s : list) {
                 scoreList.getChildren().add(new Label(s));
             }
-            
+
             VBox title = new VBox();
-            title.getChildren().add(new Text("High Scores Top 10"));
+            title.getChildren().add(new Text("High Scores - Top 10"));
             title.setAlignment(Pos.CENTER);
             title.setPadding(new Insets(35, 15, 25, 15));
             scorePane.setTop(title);
             scoreList.setAlignment(Pos.CENTER);
             scorePane.setCenter(scoreList);
-            
+
             primaryStage.setScene(scoreboard);
 
         });
@@ -139,7 +138,7 @@ public class TetrisUi extends Application {
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setPadding(new Insets(35, 15, 25, 15));
         buttonBox.getChildren().add(backToStart);
-        
+
         scorePane.setBottom(buttonBox);
 
         // submit score to database
@@ -214,21 +213,24 @@ public class TetrisUi extends Application {
 
         // the game loop; separate into its own method?
         startGame.setOnAction((event) -> {
-            
+
             tetris.reset();
             // needed, because a new game shows the old time for a second
             time = 0;
             timeText.setText("Time: " + String.valueOf(time));
-            
+
             ex = Executors.newScheduledThreadPool(1);
             Runnable timerUpdate = () -> {
                 time++;
-                timeText.setText("Time: " + String.valueOf(time));
+                if (time > 60) {
+                    timeText.setText("Time: " + String.valueOf(time / 60) + "m " + (time - ((time / 60) * 60)) + "s");
+                } else {
+                    timeText.setText("Time: " + String.valueOf(time) + "s");
+                }
 
             };
 
             ex.scheduleWithFixedDelay(timerUpdate, 1, 1, TimeUnit.SECONDS);
-            
 
             primaryStage.setScene(gameLoop);
 
@@ -241,7 +243,7 @@ public class TetrisUi extends Application {
                 public void handle(long now) {
 
                     if (tetris.isGameOver()) {
-                        
+
                         ex.shutdown();
                         stop();
                         // get the final score
@@ -287,10 +289,12 @@ public class TetrisUi extends Application {
      * @param gc GraphicsContext
      */
     public void drawFaller(GraphicsContext gc) {
-        gc.setFill(tetris.getFaller().getColor());
-        for (Point p : tetris.getFaller().getTetromino()) {
-            gc.fillRect(((p.x + tetris.getFaller().getOrigin().x) * scale), ((p.y + tetris.getFaller().getOrigin().y) * scale), scale, scale);
 
+        for (Point p : tetris.getFaller().getTetromino()) {
+            gc.setFill(Color.BLACK);
+            gc.fillRect(((p.x + tetris.getFaller().getOrigin().x) * scale) - 1, ((p.y + tetris.getFaller().getOrigin().y) * scale) - 1, scale, scale);
+            gc.setFill(tetris.getFaller().getColor());
+            gc.fillRect(((p.x + tetris.getFaller().getOrigin().x) * scale), ((p.y + tetris.getFaller().getOrigin().y) * scale), scale, scale);
         }
     }
 
@@ -302,6 +306,8 @@ public class TetrisUi extends Application {
     public void drawMatrix(GraphicsContext gc) {
         for (int y = 0; y < tetris.getMatrixHeight(); y++) {
             for (int x = 0; x < tetris.getMatrixWidth(); x++) {
+                gc.setFill(Color.BLACK);
+                gc.fillRect((x * scale) - 1, (y * scale) - 1, scale, scale);
                 gc.setFill(tetris.getMatrix()[y][x]);
                 gc.fillRect(x * scale, y * scale, scale, scale);
             }

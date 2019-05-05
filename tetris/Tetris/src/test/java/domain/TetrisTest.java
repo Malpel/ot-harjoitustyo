@@ -201,4 +201,27 @@ public class TetrisTest {
         assertEquals(3, fullRows);
     }
 
+    @Test
+    public void matrixUpdatesCorrectly() {
+        assertEquals(0, tetris.updateMatrix(tetromino));
+
+        Color[][] testMatrix = new Color[tetris.getHeight()][tetris.getWidth()];
+
+        for (Point p : tetromino.getTetromino()) {
+            testMatrix[p.y + tetromino.getOrigin().y][p.x + tetromino.getOrigin().x] = tetromino.getColor();
+        }
+
+        boolean same = true;
+
+        for (Point p : tetromino.getTetromino()) {
+            if (tetris.getMatrix()[p.y + tetromino.getOrigin().y][p.x + tetromino.getOrigin().x]
+                    != testMatrix[p.y + tetromino.getOrigin().y][p.x + tetromino.getOrigin().x]) {
+                same = false;
+            }
+        }
+
+        assertTrue(same);
+
+    }
+
 }
