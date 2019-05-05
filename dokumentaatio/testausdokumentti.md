@@ -2,7 +2,7 @@
 
 ## Yksikkö- ja integraatiotestaus
 
-Automatisoidut yksikkö- ja integraatiotestit on toteutettu JUnitilla. Keskeistä sovelluslogiikkaa testaa _TetrisServiceTest_. Myös luokille _Tetris_ ja _Tetromino_ on omat yksikkötestinsä. _ScoreDaon_ pysyväistallenuksen testaamisessa on hyödynnetty JUnitin TemporaryFolder-rulea.
+Automatisoidut yksikkö- ja integraatiotestit on toteutettu JUnitilla. Keskeistä sovelluslogiikkaa testaa _TetrisServiceTest_. Myös luokille _Tetris_ ja _Tetromino_ on omat yksikkötestinsä. _ScoreDaon_ pysyväistallennuksen testaamisessa on hyödynnetty JUnitin TemporaryFolder-rulea.
 
 
 ### Testauskattavuus
